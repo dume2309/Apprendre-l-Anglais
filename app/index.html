@@ -73,6 +73,20 @@ button{font-family:'Sora',sans-serif;border:none;cursor:pointer;min-height:44px;
 .bzone .abtn{background:var(--s2);color:var(--muted);font-size:13px;padding:8px 16px;border-radius:20px;display:flex;align-items:center;gap:4px}
 .bzone .abtn.primary{background:var(--gold);color:var(--bg);font-weight:600}
 
+/* Hints (suggested phrases) */
+.hints{align-self:stretch;margin:4px 16px;display:flex;flex-direction:column;gap:6px}
+.hint-title{font-size:11px;color:var(--muted);margin-bottom:2px}
+.hint{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--teal);cursor:pointer;transition:all .15s}
+.hint:active{transform:scale(.98)}
+.hint.ok{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green)}
+.hint.ko{border-color:var(--red);background:rgba(240,107,107,.1);color:var(--red)}
+.hints.done .hint{pointer-events:none;opacity:.7}
+.hints.done .hint.ok,.hints.done .hint.ko{opacity:1}
+
+/* Mic pulse */
+.mic-pulse{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);animation:mp 1s ease-in-out infinite;vertical-align:middle;margin-right:6px}
+@keyframes mp{0%,100%{box-shadow:0 0 0 0 rgba(240,107,107,.4)}50%{box-shadow:0 0 0 8px rgba(240,107,107,0)}}
+
 /* Wave */
 .wave{display:flex;gap:3px;align-items:center;justify-content:center;height:24px}
 .wave span{width:3px;background:var(--gold);border-radius:2px;animation:w .8s ease-in-out infinite}
@@ -404,37 +418,134 @@ function playStep(){
 }
 
 function showChoices(step){
-  const zone=document.getElementById('bzone');
-  document.getElementById('status').textContent='Choisis ta reponse :';
+  document.getElementById('status').innerHTML='';
   const acts=document.getElementById('acts');
   acts.innerHTML='';
-
-  // Create choice buttons in chat
   const chat=document.getElementById('chat');
-  const cDiv=document.createElement('div');cDiv.className='choices';
+
+  // Show hint phrases (what you could say)
+  const hDiv=document.createElement('div');hDiv.className='hints';
+  hDiv.innerHTML='<div class="hint-title">Tu peux dire :</div>';
   step.choices.forEach((c,i)=>{
-    const btn=document.createElement('button');btn.className='cho';btn.textContent=c;
-    btn.onclick=()=>handleChoice(step,i,cDiv);
-    cDiv.appendChild(btn);
+    const h=document.createElement('div');h.className='hint';h.textContent=c;
+    h.onclick=()=>{if(!hDiv.classList.contains('done'))selectChoice(step,i,hDiv)};
+    hDiv.appendChild(h);
   });
-  chat.appendChild(cDiv);
+  chat.appendChild(hDiv);
   scroll();
+
+  // Start listening automatically
+  if(hasVoice){
+    startListening(step,hDiv);
+  } else {
+    document.getElementById('status').textContent='Pas de micro — clique sur une phrase';
+  }
 }
 
-function handleChoice(step,idx,cDiv){
-  const btns=cDiv.querySelectorAll('.cho');
-  btns.forEach(b=>b.disabled=true);
+// ── VOICE RECOGNITION ──
+let recognition=null, hasVoice=false;
+(function initVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  hasVoice=true;
+  recognition=new SR();
+  recognition.continuous=false;
+  recognition.interimResults=true;
+  recognition.maxAlternatives=3;
+  recognition.lang='en-US';
+})();
+
+function startListening(step,hDiv){
+  if(!recognition)return;
+  document.getElementById('status').innerHTML='<div class="mic-pulse"></div> Parle en anglais...';
+  try{
+    recognition.start();
+  }catch(e){}
+
+  let finalTranscript='';
+
+  recognition.onresult=(event)=>{
+    let interim='';
+    for(let i=event.resultIndex;i<event.results.length;i++){
+      if(event.results[i].isFinal){
+        finalTranscript=event.results[i][0].transcript.trim();
+      } else {
+        interim=event.results[i][0].transcript;
+      }
+    }
+    document.getElementById('status').innerHTML='<div class="mic-pulse"></div> '+esc(interim||finalTranscript);
+  };
+
+  recognition.onend=()=>{
+    if(finalTranscript&&!hDiv.classList.contains('done')){
+      matchVoice(finalTranscript,step,hDiv);
+    } else if(!hDiv.classList.contains('done')){
+      // No speech detected, restart
+      document.getElementById('status').innerHTML='<div class="mic-pulse"></div> Je n\'ai rien entendu, reessaie...';
+      setTimeout(()=>{if(!hDiv.classList.contains('done'))startListening(step,hDiv)},1000);
+    }
+  };
+
+  recognition.onerror=(e)=>{
+    if(e.error==='no-speech'){
+      setTimeout(()=>{if(!hDiv.classList.contains('done'))startListening(step,hDiv)},500);
+    } else if(e.error==='not-allowed'){
+      document.getElementById('status').textContent='Autorise le micro — ou clique sur une phrase';
+      hasVoice=false;
+    }
+  };
+}
+
+function matchVoice(transcript,step,hDiv){
+  const t=transcript.toLowerCase().replace(/[^a-z0-9 ]/g,'');
+  let bestIdx=0, bestScore=0;
+
+  step.choices.forEach((c,i)=>{
+    const ref=c.toLowerCase().replace(/[^a-z0-9 ]/g,'');
+    const score=similarity(t,ref);
+    if(score>bestScore){bestScore=score;bestIdx=i}
+  });
+
+  // Show what was heard
+  const chat=document.getElementById('chat');
+  const uEl=document.createElement('div');uEl.className='msg u';
+  uEl.innerHTML=`<span class="tag">DUME &#127908;</span>${esc(transcript)}`;
+  chat.appendChild(uEl);
+  scroll();
+
+  if(bestScore>0.35){
+    selectChoice(step,bestIdx,hDiv);
+  } else {
+    // Didn't match well enough
+    document.getElementById('status').innerHTML='Pas compris. Reessaie ou clique sur une phrase.';
+    setTimeout(()=>{if(!hDiv.classList.contains('done'))startListening(step,hDiv)},1500);
+  }
+}
+
+function similarity(a,b){
+  const wa=a.split(/\s+/), wb=b.split(/\s+/);
+  let matches=0;
+  wa.forEach(w=>{if(wb.some(x=>x===w||x.includes(w)||w.includes(x)))matches++});
+  return matches/Math.max(wb.length,1);
+}
+
+function selectChoice(step,idx,hDiv){
+  hDiv.classList.add('done');
+  if(recognition)try{recognition.abort()}catch(e){}
+  const hints=hDiv.querySelectorAll('.hint');
   sessionTotal++;
 
   const isCorrect=step.accept.includes(idx);
-  if(isCorrect){sessionScore++;btns[idx].classList.add('correct')}
-  else{btns[idx].classList.add('wrong');btns[step.accept[0]].classList.add('correct')}
+  if(isCorrect){sessionScore++;hints[idx].classList.add('ok')}
+  else{hints[idx].classList.add('ko');hints[step.accept[0]].classList.add('ok')}
 
-  // User message
+  // User message if not already shown by voice
   const chat=document.getElementById('chat');
-  const uEl=document.createElement('div');uEl.className='msg u';
-  uEl.innerHTML=`<span class="tag">DUME</span>${esc(step.choices[idx])}`;
-  chat.appendChild(uEl);
+  if(!chat.querySelector('.msg.u:last-child')||!chat.querySelector('.msg.u:last-child').textContent.includes(step.choices[idx].slice(0,10))){
+    const uEl=document.createElement('div');uEl.className='msg u';
+    uEl.innerHTML=`<span class="tag">DUME</span>${esc(step.choices[idx])}`;
+    chat.appendChild(uEl);
+  }
 
   // Feedback
   setTimeout(()=>{
@@ -442,14 +553,13 @@ function handleChoice(step,idx,cDiv){
     const fEl=document.createElement('div');fEl.className='msg g';
     fEl.innerHTML=`<span class="tag">&#127802; GUSTI</span>${esc(fb)}`;
     chat.appendChild(fEl);
-    speak(isCorrect?fb:'');
+    speak(fb);
     scroll();
 
-    // Update score display
     document.getElementById('exScore').textContent=Math.round(sessionScore/sessionTotal*100)+'%';
+    document.getElementById('status').textContent='';
 
-    // Next step
-    setTimeout(()=>{curStep++;playStep()},2000);
+    setTimeout(()=>{curStep++;playStep()},2500);
   },600);
 
   scroll();
