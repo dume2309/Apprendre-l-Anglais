@@ -195,13 +195,13 @@ input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;bac
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h2>&#9881;&#65039; Configuration</h2>
-    <label>Cle API Google Gemini (gratuite)</label>
-    <input type="password" id="cfgApiKey" placeholder="AIza...">
+    <label>Cle API OpenRouter (gratuite)</label>
+    <input type="password" id="cfgApiKey" placeholder="sk-or-...">
     <label>Modele</label>
     <select id="cfgModel">
-      <option value="gemini-2.0-flash">Gemini 2.0 Flash (rapide, recommande)</option>
-      <option value="gemini-2.5-flash-preview-05-20">Gemini 2.5 Flash (dernier)</option>
-      <option value="gemini-2.5-pro-preview-05-06">Gemini 2.5 Pro (meilleur)</option>
+      <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (gratuit)</option>
+      <option value="meta-llama/llama-4-maverick:free">Llama 4 Maverick (gratuit)</option>
+      <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (gratuit)</option>
     </select>
     <label>Token GitHub (optionnel — sync progression)</label>
     <input type="password" id="cfgGhToken" placeholder="ghp_...">
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── CONFIG ──
 function loadConfig() {
   const raw = localStorage.getItem(CONFIG_KEY);
-  config = raw ? JSON.parse(raw) : { apiKey:'', model:'gemini-2.0-flash', ghToken:'', phase:1 };
+  config = raw ? JSON.parse(raw) : { apiKey:'', model:'google/gemini-2.0-flash-exp:free', ghToken:'', phase:1 };
   currentPhase = config.phase || 1;
 }
 function saveConfig() {
@@ -413,7 +413,7 @@ function bindEvents() {
   document.getElementById('btnBack').addEventListener('click', endSession);
   document.getElementById('btnSettings').addEventListener('click', () => {
     document.getElementById('cfgApiKey').value = config.apiKey || '';
-    document.getElementById('cfgModel').value = config.model || 'gemini-2.0-flash';
+    document.getElementById('cfgModel').value = config.model || 'google/gemini-2.0-flash-exp:free';
     document.getElementById('cfgGhToken').value = config.ghToken || '';
     document.getElementById('cfgPhase').value = currentPhase;
     openModal('settingsModal');
@@ -995,25 +995,28 @@ ${reportType ? `RAPPORT SPONTANE A GENERER: type "${reportType}". Integre-le nat
 Commence directement dans la scene. Pas de menu. Pas de question "que veux-tu pratiquer". Tu decides. C'est toi le pilote.`;
 }
 
-// ── API CALL (Google Gemini) ──
+// ── API CALL (OpenRouter) ──
 async function callAPI(systemPrompt, messages) {
   if (!config.apiKey) return null;
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent?key=${config.apiKey}`;
+    const apiMessages = [
+      { role: 'system', content: systemPrompt },
+      ...messages.map(m => ({ role: m.role, content: m.content }))
+    ];
 
-    // Build Gemini conversation format
-    const contents = messages.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
-
-    const res = await fetch(url, {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.apiKey}`,
+        'HTTP-Referer': 'https://dume2309.github.io/Apprendre-l-Anglais/',
+        'X-Title': 'Apprendre l\'Anglais'
+      },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents,
-        generationConfig: { maxOutputTokens: 1024, temperature: 0.9 }
+        model: config.model,
+        messages: apiMessages,
+        max_tokens: 1024,
+        temperature: 0.9
       })
     });
 
@@ -1025,8 +1028,8 @@ async function callAPI(systemPrompt, messages) {
     }
 
     const data = await res.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || null;
-    if (!text) { lastApiError = 'Reponse vide de Gemini'; console.error('Empty response:', JSON.stringify(data)); }
+    const text = data.choices?.[0]?.message?.content || null;
+    if (!text) { lastApiError = 'Reponse vide'; console.error('Empty response:', JSON.stringify(data)); }
     return text;
   } catch (e) {
     console.error('API call failed:', e);
