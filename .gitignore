@@ -1,0 +1,7 @@
+# System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups locaux
+Bkp/

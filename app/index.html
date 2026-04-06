@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Apprendre l'Anglais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Sora',sans-serif;background:var(--bg);color:var(--text)}
+:root{
+  --bg:#0c0e14;--s1:#13161f;--s2:#191d2d;--s3:#20253a;
+  --bd:#282d45;--gold:#e8b84b;--teal:#3ecfb2;--red:#f06b6b;
+  --blue:#5b9cf5;--green:#4ade80;--text:#e4e6f2;--muted:#5f6480;
+  --r:12px;--fn:'Sora',sans-serif;
+}
+h1,h2,h3{font-family:'Lora',serif}
+button{font-family:var(--fn);border:none;cursor:pointer;min-height:44px;border-radius:var(--r)}
+input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;background:transparent;color:var(--text)}
+
+/* ── SCREENS ── */
+.scr{position:absolute;inset:0;height:100dvh;display:flex;flex-direction:column;transition:opacity .3s,transform .3s}
+.scr.hidden{opacity:0;pointer-events:none;transform:translateY(20px)}
+
+/* ══════════════ HOME SCREEN ══════════════ */
+#sh{justify-content:center;align-items:center;padding:24px;text-align:center;gap:20px}
+#sh .logo{font-size:42px;margin-bottom:-8px}
+#sh h1{font-size:22px;color:var(--text);letter-spacing:-.5px}
+#sh .gusti-avatar{width:80px;height:80px;border-radius:50%;background:var(--s3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;margin:8px auto 0}
+#sh .quote{color:var(--muted);font-style:italic;font-size:13px;max-width:280px;min-height:40px;line-height:1.5}
+.stats-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.stat-card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 16px;min-width:70px;text-align:center}
+.stat-card .sv{font-size:20px;font-weight:700;color:var(--gold)}
+.stat-card .sl{font-size:10px;color:var(--muted);margin-top:2px}
+.info-row{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);margin:4px 0}
+.info-row span{display:flex;align-items:center;gap:6px;justify-content:center}
+#btnStart{background:var(--gold);color:var(--bg);font-size:16px;font-weight:600;padding:14px 48px;border-radius:28px;letter-spacing:.3px;margin-top:8px;transition:transform .15s,box-shadow .15s}
+#btnStart:active{transform:scale(.96);box-shadow:0 0 0 6px rgba(232,184,75,.15)}
+
+/* ══════════════ CHAT SCREEN ══════════════ */
+#sc{background:var(--bg)}
+.chat-header{display:flex;align-items:center;padding:12px 16px;background:var(--s1);border-bottom:1px solid var(--bd);gap:10px;flex-shrink:0}
+.chat-header .back{background:none;color:var(--muted);font-size:20px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.chat-header .title{flex:1;font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--text)}
+.chat-header .title small{font-weight:400;color:var(--muted);font-size:11px;display:block;font-family:'Sora',sans-serif}
+.chat-header .hbtn{background:none;color:var(--muted);font-size:16px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+
+.session-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 16px;background:var(--s1);border-bottom:1px solid var(--bd);font-size:11px;color:var(--muted);flex-shrink:0}
+
+/* Messages */
+.chat-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;animation:msgIn .25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.ai{align-self:flex-start;background:var(--s2);border:1px solid var(--bd);border-bottom-left-radius:4px}
+.msg.user{align-self:flex-end;background:var(--s3);border:1px solid var(--bd);border-bottom-right-radius:4px;color:var(--teal)}
+.msg .mtag{font-size:10px;font-weight:600;margin-bottom:4px;display:block}
+.msg.ai .mtag{color:var(--gold)}
+.msg.user .mtag{color:var(--teal)}
+
+/* Hors scene */
+.msg.hors-scene{background:var(--s3);border:1px solid rgba(232,184,75,.25);border-left:3px solid var(--gold)}
+.msg.hors-scene .mtag{color:var(--gold)}
+.msg.reprise{background:transparent;border:1px dashed var(--bd);font-size:12px;color:var(--muted);text-align:center;align-self:center;max-width:70%;padding:6px 14px}
+
+/* Bilan */
+.msg.bilan{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--gold);border-left:3px solid var(--gold)}
+.msg.bilan .mtag{color:var(--gold)}
+
+/* FR annotations inline */
+.fr-annot{display:block;margin-top:6px;padding:6px 10px;background:rgba(232,184,75,.08);border-radius:8px;font-size:12px;color:var(--gold);font-style:italic}
+.vocab-annot{display:inline-block;margin-top:4px;padding:2px 8px;background:rgba(62,207,178,.1);border-radius:6px;font-size:11px;color:var(--teal)}
+.check-annot{color:var(--green);font-size:12px;display:block;margin-top:4px}
+
+/* ── VOICE ZONE ── */
+.voice-zone{padding:16px;padding-bottom:env(safe-area-inset-bottom,16px);background:var(--s1);border-top:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0}
+
+.mic-btn{width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:28px;display:flex;align-items:center;justify-content:center;transition:all .2s;border:none;position:relative}
+.mic-btn.listening{background:var(--red);animation:pulse 1s infinite;box-shadow:0 0 0 12px rgba(240,107,107,.2)}
+.mic-btn.processing{background:var(--muted)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,107,107,.4)}50%{box-shadow:0 0 0 16px rgba(240,107,107,0)}}
+
+.voice-hint{font-size:11px;color:var(--muted);text-align:center;min-height:16px}
+.interim-text{font-size:13px;color:var(--muted);font-style:italic;min-height:18px;text-align:center;max-width:90%}
+
+.voice-actions{display:flex;gap:16px;align-items:center}
+.voice-actions button{background:var(--s2);color:var(--muted);font-size:13px;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:4px;min-height:34px}
+
+/* Wave indicator */
+.wave-indicator{display:flex;gap:3px;align-items:center;justify-content:center;height:24px}
+.wave-bar{width:3px;background:var(--gold);border-radius:2px;animation:wave .8s ease-in-out infinite}
+.wave-bar:nth-child(2){animation-delay:.1s}
+.wave-bar:nth-child(3){animation-delay:.2s}
+.wave-bar:nth-child(4){animation-delay:.3s}
+.wave-bar:nth-child(5){animation-delay:.15s}
+@keyframes wave{0%,100%{height:4px}50%{height:20px}}
+
+/* Mic active dot */
+.mic-active-dot{width:10px;height:10px;border-radius:50%;background:var(--red);animation:pulse 1s ease-in-out infinite;margin:0 auto}
+
+/* ── KEYBOARD INPUT ── */
+.inp-row{display:flex;gap:8px;padding:10px 16px;padding-bottom:env(safe-area-inset-bottom,16px);background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0}
+.inp-row input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:20px;padding:10px 16px;font-size:14px;color:var(--text)}
+.inp-row input::placeholder{color:var(--muted);font-size:13px}
+.inp-row .send-btn{width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:18px;display:flex;align-items:center;justify-content:center}
+
+/* ══════════════ MODALS ══════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;width:100%;max-width:380px;max-height:80dvh;overflow-y:auto}
+.modal h2{font-size:18px;margin-bottom:16px;color:var(--gold)}
+.modal label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
+.modal input,.modal select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px;font-size:14px;color:var(--text)}
+.modal .mbtn-row{display:flex;gap:8px;margin-top:20px}
+.modal .mbtn{flex:1;padding:10px;text-align:center;border-radius:var(--r);font-weight:600;font-size:14px}
+.modal .mbtn.primary{background:var(--gold);color:var(--bg)}
+.modal .mbtn.secondary{background:var(--s3);color:var(--muted)}
+
+/* Stats modal */
+.stats-section{margin:12px 0}
+.stats-section h3{font-size:13px;color:var(--teal);margin-bottom:8px}
+.bar-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
+.bar-label{width:100px;color:var(--muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.bar-track{flex:1;height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.bar-val{width:32px;text-align:right;color:var(--text);font-weight:600;flex-shrink:0}
+
+/* ── HIDDEN UTILITY ── */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HOME SCREEN ══════════════ -->
+<div id="sh" class="scr">
+  <div class="logo">&#9992;&#65039;</div>
+  <h1>Apprendre l'Anglais</h1>
+  <div class="gusti-avatar">&#127802;</div>
+  <div class="quote" id="quoteEl"></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="sv" id="stSess">0</div><div class="sl">Sessions</div></div>
+    <div class="stat-card"><div class="sv" id="stExch">0</div><div class="sl">Echanges</div></div>
+    <div class="stat-card"><div class="sv" id="stScore">--</div><div class="sl">Score</div></div>
+    <div class="stat-card"><div class="sv" id="stDays">0</div><div class="sl">Jours</div></div>
+  </div>
+  <div class="info-row">
+    <span id="infoLacunes"></span>
+    <span id="infoLast"></span>
+    <span id="infoSync"></span>
+  </div>
+  <button id="btnStart">&#127919; Commencer</button>
+</div>
+
+<!-- ══════════════ CHAT SCREEN ══════════════ -->
+<div id="sc" class="scr hidden">
+  <div class="chat-header">
+    <button class="back" id="btnBack">&#8592;</button>
+    <div class="title">&#127802; Gusti &middot; Session<small id="sessionPhaseLabel">Phase 1</small></div>
+    <button class="hbtn" id="btnStats">&#128202;</button>
+    <button class="hbtn" id="btnSettings">&#9881;&#65039;</button>
+  </div>
+  <div class="session-bar">
+    <span>Echanges : <b id="exchCount">0</b></span>
+    <span id="sessionScore"></span>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+
+  <!-- Voice zone (default) -->
+  <div class="voice-zone" id="voiceZone">
+    <div class="interim-text" id="interimEl"></div>
+    <div id="voiceIndicator"></div>
+    <button class="mic-btn" id="micBtn">&#127908;</button>
+    <div class="voice-hint" id="voiceHint">Appuie et parle</div>
+    <div class="voice-actions">
+      <button id="btnKeyboard">&#9000;&#65039; Clavier</button>
+      <button id="btnReplay">&#128266; Ecouter</button>
+    </div>
+  </div>
+
+  <!-- Keyboard input (hidden by default) -->
+  <div class="inp-row hidden" id="kbRow">
+    <input type="text" id="kbInput" placeholder="Reponds en anglais... ou pose une question en francais" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="send-btn" id="btnSend">&#10148;</button>
+    <button class="send-btn" id="btnMic" style="background:var(--s3);color:var(--muted);margin-left:-4px">&#127908;</button>
+  </div>
+</div>
+
+<!-- ══════════════ SETTINGS MODAL ══════════════ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h2>&#9881;&#65039; Configuration</h2>
+    <label>Cle API Anthropic</label>
+    <input type="password" id="cfgApiKey" placeholder="sk-ant-...">
+    <label>Modele</label>
+    <select id="cfgModel">
+      <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+      <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
+      <option value="claude-opus-4-20250514">Claude Opus 4</option>
+    </select>
+    <label>Token GitHub (optionnel — sync progression)</label>
+    <input type="password" id="cfgGhToken" placeholder="ghp_...">
+    <label>Phase actuelle</label>
+    <select id="cfgPhase">
+      <option value="1">Phase 1 — Fondations</option>
+      <option value="2">Phase 2 — Consolidation</option>
+      <option value="3">Phase 3 — Fluidite</option>
+      <option value="4">Phase 4 — Autonomie</option>
+    </select>
+    <div class="mbtn-row">
+      <button class="mbtn secondary" onclick="closeModal('settingsModal')">Annuler</button>
+      <button class="mbtn primary" id="btnSaveSettings">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ STATS MODAL ══════════════ -->
+<div class="modal-overlay" id="statsModal">
+  <div class="modal">
+    <h2>&#128202; Progression</h2>
+    <div id="statsContent"></div>
+    <div class="mbtn-row">
+      <button class="mbtn primary" onclick="closeModal('statsModal')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MICRO PERMISSION MODAL ══════════════ -->
+<div class="modal-overlay" id="micModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">&#127908;</div>
+    <h2 style="color:var(--text)">Autoriser le micro</h2>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">
+      L'appli a besoin du micro pour les sessions vocales.<br>
+      Safari va te demander l'autorisation — appuie sur "Autoriser".
+    </p>
+    <div class="mbtn-row" style="flex-direction:column;gap:10px">
+      <button class="mbtn primary" id="btnEnableMic">Activer le micro</button>
+      <button class="mbtn secondary" id="btnUseKeyboard">Utiliser le clavier</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// APPRENDRE L'ANGLAIS — Application complete
+// ═══════════════════════════════════════════════
+
+// ── CONSTANTS ──
+const STORAGE_KEY = 'anglais_v1';
+const CONFIG_KEY = 'anglais_config';
+const REPO = 'dume2309/Apprendre-l-Anglais';
+const SYNC_PATH = 'suivi/progression.json';
+
+const SCENARIO_IDS = [
+  'hotel_arrivee','hotel_demandes','hotel_problemes','hotel_checkout',
+  'taxi_commander','taxi_negocier','taxi_directions','transport_bus',
+  'resto_reserver','resto_commander','resto_problemes','resto_addition',
+  'excursion_reserver','excursion_groupe','excursion_annul',
+  'shopping_prix','shopping_tailles','urgence_sante','urgence_papiers',
+  'nombres_heures','pratique_libre'
+];
+
+const SCENARIO_LABELS = {
+  hotel_arrivee:'Hotel arrivee',hotel_demandes:'Hotel demandes',hotel_problemes:'Hotel problemes',
+  hotel_checkout:'Hotel checkout',taxi_commander:'Taxi commander',taxi_negocier:'Taxi negocier',
+  taxi_directions:'Taxi directions',transport_bus:'Transport bus',resto_reserver:'Resto reserver',
+  resto_commander:'Resto commander',resto_problemes:'Resto problemes',resto_addition:'Resto addition',
+  excursion_reserver:'Excursion reserver',excursion_groupe:'Excursion groupe',excursion_annul:'Excursion annul.',
+  shopping_prix:'Shopping prix',shopping_tailles:'Shopping tailles',urgence_sante:'Urgence sante',
+  urgence_papiers:'Urgence papiers',nombres_heures:'Nombres & heures',pratique_libre:'Pratique libre'
+};
+
+const QUOTES = [
+  "The journey of a thousand miles begins with a single step.",
+  "On commence ? J'ai prepare un beau voyage pour toi.",
+  "Chaque session te rapproche du vrai voyage.",
+  "Tu vas voir, aujourd'hui on va bien bosser.",
+  "Ready when you are, Dume.",
+  "Les erreurs, c'est le chemin. Allez, on y va.",
+  "Bali t'attend. Moi aussi.",
+  "Un mot a la fois. C'est comme ca qu'on apprend."
+];
+
+const FILLER_PHRASES = ["Mmm...","Right...","I see...","Okay...","Ah...","Let me think..."];
+
+const HESITATION_WORDS = ['hmm','hm','euh','uh','um','err','wait','let me think','how do you say','comment dit-on','je sais pas'];
+
+const FRENCH_INDICATORS = [
+  'comment','qu\'est-ce','c\'est quoi','pourquoi','je comprends pas',
+  'tu peux','ca veut dire','comment dit-on','quelle est la difference',
+  'je sais pas','j\'ai pas compris','repete','trop vite','je comprends rien',
+  'explique','difference entre'
+];
+
+const SPEECH_CONFIG = {
+  1:{rate:0.75,pause:800,desc:'Lent et articule'},
+  2:{rate:0.95,pause:400,desc:'Vitesse normale'},
+  3:{rate:1.1,pause:200,desc:'Naturel — contractions'},
+  4:{rate:1.25,pause:100,desc:'Rapide — accents varies'}
+};
+
+// ── STATE ──
+let stats = null;
+let config = null;
+let sessionActive = false;
+let conversationHistory = [];
+let sessionExchanges = 0;
+let sessionObservations = [];
+let currentPhase = 1;
+let inputMode = 'voice';
+let isGustiSpeaking = false;
+let userIsSpeaking = false;
+let lastGustiMessage = '';
+let lastGustiRaw = '';
+let voices = [];
+let recognition = null;
+let hasVoiceSupport = false;
+let hasSynthesis = false;
+let longSilenceTimer = null;
+let cycleRunning = false;
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  loadConfig();
+  loadStats();
+  updateHomeScreen();
+  initVoice();
+  bindEvents();
+  rotateQuote();
+  // Check if config needed
+  if (!config.apiKey) {
+    setTimeout(() => openModal('settingsModal'), 400);
+  }
+});
+
+// ── CONFIG ──
+function loadConfig() {
+  const raw = localStorage.getItem(CONFIG_KEY);
+  config = raw ? JSON.parse(raw) : { apiKey:'', model:'claude-sonnet-4-20250514', ghToken:'', phase:1 };
+  currentPhase = config.phase || 1;
+}
+function saveConfig() {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+}
+
+// ── STATS / LOCALSTORAGE ──
+function defaultStats() {
+  const scenarios = {};
+  SCENARIO_IDS.forEach(id => {
+    scenarios[id] = { sessions:0, scores:[], score_moyen:null, score_comprehension:null, lacunes_cumulees:[], questions_fr:[], acquis:[], derniere_session:null };
+  });
+  return {
+    meta: { total_sessions:0, total_echanges:0, jours_actifs:[], derniere_session:null, derniere_sync_github:null, dernier_rapport:null, sessions_au_dernier_rapport:0 },
+    lacunes_globales: [],
+    scenarios,
+    historique: []
+  };
+}
+function loadStats() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  stats = raw ? JSON.parse(raw) : defaultStats();
+  // Ensure all scenario keys exist
+  SCENARIO_IDS.forEach(id => {
+    if (!stats.scenarios[id]) stats.scenarios[id] = { sessions:0, scores:[], score_moyen:null, score_comprehension:null, lacunes_cumulees:[], questions_fr:[], acquis:[], derniere_session:null };
+  });
+}
+function saveStats() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+}
+
+// ── HOME SCREEN ──
+function updateHomeScreen() {
+  document.getElementById('stSess').textContent = stats.meta.total_sessions;
+  document.getElementById('stExch').textContent = stats.meta.total_echanges;
+  document.getElementById('stDays').textContent = stats.meta.jours_actifs.length;
+  // Average score
+  const allScores = Object.values(stats.scenarios).flatMap(s => s.scores);
+  const avg = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
+  document.getElementById('stScore').textContent = avg !== null ? avg+'%' : '--';
+  // Info rows
+  const critLac = stats.lacunes_globales.filter(l => (l.count||0) >= 3);
+  document.getElementById('infoLacunes').textContent = critLac.length ? `\u26A0\uFE0F ${critLac.length} lacune${critLac.length>1?'s':''} critique${critLac.length>1?'s':''}` : '';
+  document.getElementById('infoLast').textContent = stats.meta.derniere_session ? `\uD83D\uDCC5 Derniere session : ${formatRelDate(stats.meta.derniere_session)}` : '';
+  document.getElementById('infoSync').textContent = stats.meta.derniere_sync_github ? `\u2705 GitHub sync : ${new Date(stats.meta.derniere_sync_github).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}` : '';
+  // Phase
+  document.getElementById('cfgPhase').value = currentPhase;
+}
+
+function formatRelDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso), now = new Date();
+  const diff = Math.floor((now - d) / 86400000);
+  if (diff === 0) return "aujourd'hui";
+  if (diff === 1) return 'hier';
+  return `il y a ${diff} jours`;
+}
+
+function rotateQuote() {
+  const el = document.getElementById('quoteEl');
+  el.textContent = '\u00AB ' + QUOTES[Math.floor(Math.random()*QUOTES.length)] + ' \u00BB';
+}
+
+// ── EVENTS ──
+function bindEvents() {
+  document.getElementById('btnStart').addEventListener('click', startSession);
+  document.getElementById('btnBack').addEventListener('click', endSession);
+  document.getElementById('btnSettings').addEventListener('click', () => {
+    document.getElementById('cfgApiKey').value = config.apiKey || '';
+    document.getElementById('cfgModel').value = config.model || 'claude-sonnet-4-20250514';
+    document.getElementById('cfgGhToken').value = config.ghToken || '';
+    document.getElementById('cfgPhase').value = currentPhase;
+    openModal('settingsModal');
+  });
+  document.getElementById('btnSaveSettings').addEventListener('click', () => {
+    config.apiKey = document.getElementById('cfgApiKey').value.trim();
+    config.model = document.getElementById('cfgModel').value;
+    config.ghToken = document.getElementById('cfgGhToken').value.trim();
+    config.phase = parseInt(document.getElementById('cfgPhase').value);
+    currentPhase = config.phase;
+    saveConfig();
+    closeModal('settingsModal');
+  });
+  document.getElementById('btnStats').addEventListener('click', () => { renderStatsModal(); openModal('statsModal'); });
+  document.getElementById('btnKeyboard').addEventListener('click', () => switchToKeyboard());
+  document.getElementById('btnMic').addEventListener('click', () => switchToVoice());
+  document.getElementById('btnReplay').addEventListener('click', () => { if (lastGustiRaw) gustiSpeak(lastGustiRaw, currentPhase); });
+  document.getElementById('btnSend').addEventListener('click', sendKeyboardMessage);
+  document.getElementById('kbInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendKeyboardMessage(); });
+  document.getElementById('micBtn').addEventListener('click', onMicBtnClick);
+  document.getElementById('btnEnableMic').addEventListener('click', async () => {
+    closeModal('micModal');
+    await requestMicPermission();
+  });
+  document.getElementById('btnUseKeyboard').addEventListener('click', () => {
+    closeModal('micModal');
+    switchToKeyboard();
+  });
+}
+
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ── VOICE INIT ──
+function initVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  hasVoiceSupport = !!SR;
+  hasSynthesis = 'speechSynthesis' in window;
+
+  if (hasVoiceSupport) {
+    recognition = new SR();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = onRecognitionResult;
+    recognition.onspeechstart = () => { userIsSpeaking = true; clearTimeout(longSilenceTimer); };
+    recognition.onspeechend = () => { userIsSpeaking = false; };
+    recognition.onerror = onRecognitionError;
+    recognition.onend = onRecognitionEnd;
+  }
+
+  if (hasSynthesis) {
+    speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); };
+    voices = speechSynthesis.getVoices();
+    // iOS workaround
+    setInterval(() => {
+      if (speechSynthesis.speaking) { speechSynthesis.pause(); speechSynthesis.resume(); }
+    }, 10000);
+  }
+
+  if (!hasVoiceSupport) {
+    inputMode = 'keyboard';
+  }
+}
+
+async function requestMicPermission() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(t => t.stop());
+    inputMode = 'voice';
+    updateInputUI();
+  } catch(e) {
+    switchToKeyboard();
+  }
+}
+
+// ── INPUT MODE ──
+function switchToKeyboard() {
+  inputMode = 'keyboard';
+  stopListening();
+  updateInputUI();
+}
+function switchToVoice() {
+  if (!hasVoiceSupport) return;
+  inputMode = 'voice';
+  updateInputUI();
+}
+function updateInputUI() {
+  const vz = document.getElementById('voiceZone');
+  const kb = document.getElementById('kbRow');
+  if (inputMode === 'voice') { vz.classList.remove('hidden'); kb.classList.add('hidden'); }
+  else { vz.classList.add('hidden'); kb.classList.remove('hidden'); }
+}
+
+// ── VOICE RECOGNITION ──
+function startListening() {
+  if (!recognition || isGustiSpeaking) return;
+  try {
+    recognition.lang = 'en-US';
+    recognition.start();
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('voiceHint').textContent = 'Parle...';
+    document.getElementById('interimEl').textContent = '';
+    // Long silence timer
+    longSilenceTimer = setTimeout(() => {
+      if (!userIsSpeaking && sessionActive) {
+        stopListening();
+        gustiSpeak("Take your time... what would you like to say?", currentPhase);
+      }
+    }, 8000);
+  } catch(e) {}
+}
+
+function stopListening() {
+  if (!recognition) return;
+  try { recognition.abort(); } catch(e) {}
+  document.getElementById('micBtn').classList.remove('listening','processing');
+  document.getElementById('voiceHint').textContent = 'Appuie et parle';
+  clearTimeout(longSilenceTimer);
+}
+
+function onRecognitionResult(event) {
+  const result = event.results[event.results.length - 1];
+  const transcript = result[0].transcript.trim();
+  document.getElementById('interimEl').textContent = transcript;
+
+  if (result.isFinal) {
+    clearTimeout(longSilenceTimer);
+    document.getElementById('interimEl').textContent = '';
+    // Filter hesitations
+    if (isHesitation(transcript)) {
+      document.getElementById('voiceHint').textContent = 'Prends ton temps...';
+      try { recognition.start(); } catch(e) {}
+      return;
+    }
+    // Filter too short
+    if (transcript.split(' ').length < 2 && !/[?.!]/.test(transcript)) {
+      try { recognition.start(); } catch(e) {}
+      return;
+    }
+    stopListening();
+    handleUserMessage(transcript);
+  }
+}
+
+function onRecognitionError(event) {
+  if (event.error === 'no-speech') {
+    document.getElementById('voiceHint').textContent = "Je n'ai rien entendu";
+    if (sessionActive && cycleRunning) setTimeout(() => startListening(), 1000);
+  } else if (event.error === 'not-allowed') {
+    document.getElementById('voiceHint').textContent = 'Autorise le micro dans Safari';
+    switchToKeyboard();
+  }
+}
+
+function onRecognitionEnd() {
+  document.getElementById('micBtn').classList.remove('listening');
+  // Auto-restart in cycle mode
+  if (sessionActive && cycleRunning && inputMode === 'voice' && !isGustiSpeaking) {
+    // Will be restarted by the conversation cycle
+  }
+}
+
+function onMicBtnClick() {
+  if (!sessionActive) return;
+  if (document.getElementById('micBtn').classList.contains('listening')) {
+    stopListening();
+  } else {
+    startListening();
+  }
+}
+
+function isHesitation(t) {
+  const lower = t.toLowerCase().trim();
+  return HESITATION_WORDS.some(h => lower === h || lower.startsWith(h + ' ')) && t.split(' ').length <= 3;
+}
+
+// ── SPEECH SYNTHESIS ──
+function gustiSpeak(text, phase) {
+  if (!hasSynthesis) return Promise.resolve();
+  return new Promise(resolve => {
+    const clean = stripTags(text);
+    if (!clean.trim()) { resolve(); return; }
+
+    speechSynthesis.cancel();
+    isGustiSpeaking = true;
+    stopListening();
+
+    const utt = new SpeechSynthesisUtterance(clean);
+    utt.lang = 'en-US';
+    utt.rate = SPEECH_CONFIG[phase]?.rate || 1.0;
+    utt.pitch = 1.0;
+    utt.volume = 1.0;
+
+    const pref = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
+              || voices.find(v => v.lang.startsWith('en'));
+    if (pref) utt.voice = pref;
+
+    utt.onend = () => { isGustiSpeaking = false; resolve(); };
+    utt.onerror = () => { isGustiSpeaking = false; resolve(); };
+    speechSynthesis.speak(utt);
+  });
+}
+
+function gustiSpeakFrench(text) {
+  if (!hasSynthesis) return Promise.resolve();
+  return new Promise(resolve => {
+    speechSynthesis.cancel();
+    isGustiSpeaking = true;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'fr-FR';
+    utt.rate = 1.0;
+    const frVoice = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr'));
+    if (frVoice) utt.voice = frVoice;
+    utt.onend = () => { isGustiSpeaking = false; resolve(); };
+    utt.onerror = () => { isGustiSpeaking = false; resolve(); };
+    speechSynthesis.speak(utt);
+  });
+}
+
+function gustiSpeakFiller(text) {
+  if (!hasSynthesis) return;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US';
+  utt.rate = 1.0;
+  const pref = voices.find(v => v.lang.startsWith('en'));
+  if (pref) utt.voice = pref;
+  speechSynthesis.speak(utt);
+}
+
+function stripTags(text) {
+  return text
+    .replace(/\[FR:.*?\]/gs, '')
+    .replace(/\[VOCAB:.*?\]/gs, '')
+    .replace(/\[✓.*?\]/gs, '')
+    .replace(/\[OBS:.*?\]/gs, '')
+    .replace(/\[BILAN\][\s\S]*?\[\/BILAN\]/g, '')
+    .replace(/\[hors sc[eè]ne\]/gi, '')
+    .replace(/\[reprend[s]?\]/gi, '')
+    .replace(/\[reprise\]/gi, '')
+    .trim();
+}
+
+// ── SESSION ──
+async function startSession() {
+  if (!config.apiKey) {
+    openModal('settingsModal');
+    return;
+  }
+
+  sessionActive = true;
+  sessionExchanges = 0;
+  sessionObservations = [];
+  conversationHistory = [];
+  document.getElementById('chatBody').innerHTML = '';
+  document.getElementById('exchCount').textContent = '0';
+  document.getElementById('sessionScore').textContent = '';
+  document.getElementById('sessionPhaseLabel').textContent = 'Phase ' + currentPhase;
+
+  // Switch screens
+  document.getElementById('sh').classList.add('hidden');
+  document.getElementById('sc').classList.remove('hidden');
+  updateInputUI();
+
+  // Check mic permission for voice mode
+  if (inputMode === 'voice' && hasVoiceSupport) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+    } catch(e) {
+      openModal('micModal');
+    }
+  }
+
+  // Build system prompt and start
+  const sysPrompt = buildSystemPrompt();
+  conversationHistory = [{ role: 'user', content: 'Commencer la session.' }];
+
+  addMessage('ai', '&#127802; Gusti prepare la session...', 'loading');
+  const reply = await callAPI(sysPrompt, conversationHistory);
+  removeLoadingMessage();
+
+  if (reply) {
+    conversationHistory.push({ role: 'assistant', content: reply });
+    const parsed = parseReply(reply);
+    renderAIMessage(parsed);
+    lastGustiMessage = parsed.cleanText;
+    lastGustiRaw = parsed.cleanText;
+
+    // Start conversation cycle
+    if (inputMode === 'voice' && hasVoiceSupport) {
+      cycleRunning = true;
+      await gustiSpeak(parsed.cleanText, currentPhase);
+      setTimeout(() => startListening(), 350);
+    }
+  }
+}
+
+function endSession() {
+  // Request bilan if enough exchanges
+  if (sessionActive && sessionExchanges >= 3) {
+    requestBilan();
+    return;
+  }
+  finalizeSession();
+}
+
+async function requestBilan() {
+  conversationHistory.push({ role: 'user', content: '[SYSTEM] La session se termine. Donne un [BILAN] complet de cette session.' });
+  addMessage('ai', '&#127802; Gusti prepare le bilan...', 'loading');
+  const sysPrompt = buildSystemPrompt();
+  const reply = await callAPI(sysPrompt, conversationHistory);
+  removeLoadingMessage();
+  if (reply) {
+    conversationHistory.push({ role: 'assistant', content: reply });
+    const parsed = parseReply(reply);
+    renderAIMessage(parsed);
+    if (hasSynthesis) await gustiSpeak(parsed.cleanText, currentPhase);
+  }
+  setTimeout(() => finalizeSession(), 2000);
+}
+
+function finalizeSession() {
+  sessionActive = false;
+  cycleRunning = false;
+  stopListening();
+  speechSynthesis.cancel();
+
+  // Update stats
+  const today = new Date().toISOString().slice(0, 10);
+  stats.meta.total_sessions++;
+  stats.meta.total_echanges += sessionExchanges;
+  stats.meta.derniere_session = new Date().toISOString();
+  if (!stats.meta.jours_actifs.includes(today)) stats.meta.jours_actifs.push(today);
+
+  // Process observations
+  processObservations();
+
+  // Check reports
+  checkReportTrigger();
+
+  saveStats();
+  syncToGitHub(stats);
+
+  // Switch screens
+  setTimeout(() => {
+    document.getElementById('sc').classList.add('hidden');
+    document.getElementById('sh').classList.remove('hidden');
+    updateHomeScreen();
+  }, 1000);
+}
+
+// ── MESSAGES ──
+function handleUserMessage(text) {
+  sessionExchanges++;
+  document.getElementById('exchCount').textContent = sessionExchanges;
+
+  // Detect French
+  const isFrench = detectLanguage(text) === 'french';
+
+  // Display
+  addMessage('user', escapeHtml(text));
+
+  // Send to API
+  conversationHistory.push({ role: 'user', content: text });
+  sendToGusti(text, isFrench);
+}
+
+function sendKeyboardMessage() {
+  const inp = document.getElementById('kbInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  handleUserMessage(text);
+}
+
+async function sendToGusti(transcript, isFrench) {
+  // Filler
+  if (inputMode === 'voice' && hasSynthesis && !isFrench) {
+    const filler = FILLER_PHRASES[Math.floor(Math.random() * FILLER_PHRASES.length)];
+    gustiSpeakFiller(filler);
+  }
+
+  addMessage('ai', '<div class="wave-indicator"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>', 'loading');
+
+  const sysPrompt = buildSystemPrompt();
+  const reply = await callAPI(sysPrompt, conversationHistory);
+  removeLoadingMessage();
+
+  if (!reply) {
+    addMessage('ai', 'Erreur de connexion. Reessaie.');
+    if (inputMode === 'voice' && cycleRunning) setTimeout(() => startListening(), 1000);
+    return;
+  }
+
+  conversationHistory.push({ role: 'assistant', content: reply });
+  const parsed = parseReply(reply);
+  renderAIMessage(parsed);
+  lastGustiMessage = parsed.cleanText;
+  lastGustiRaw = parsed.cleanText;
+
+  // Continue cycle
+  if (inputMode === 'voice' && cycleRunning && sessionActive) {
+    speechSynthesis.cancel();
+    await gustiSpeak(parsed.cleanText, currentPhase);
+    setTimeout(() => { if (sessionActive) startListening(); }, 350);
+  }
+}
+
+function addMessage(type, content, extra) {
+  const el = document.createElement('div');
+  el.className = `msg ${type}` + (extra ? ` ${extra}` : '');
+  el.innerHTML = (type === 'ai' ? '<span class="mtag">&#127802; GUSTI</span>' : '<span class="mtag">DUME</span>') + content;
+  document.getElementById('chatBody').appendChild(el);
+  scrollToBottom();
+}
+
+function removeLoadingMessage() {
+  const msgs = document.querySelectorAll('.msg.loading');
+  msgs.forEach(m => m.remove());
+}
+
+function renderAIMessage(parsed) {
+  const el = document.createElement('div');
+  let cls = 'msg ai';
+  if (parsed.isHorsScene) cls = 'msg ai hors-scene';
+  if (parsed.isBilan) cls = 'msg ai bilan';
+  el.className = cls;
+
+  let html = '<span class="mtag">' + (parsed.isHorsScene ? '&#127802; GUSTI — hors scene' : '&#127802; GUSTI') + '</span>';
+  html += escapeHtml(parsed.cleanText).replace(/\n/g, '<br>');
+
+  // FR annotations
+  parsed.frAnnotations.forEach(fr => {
+    html += `<span class="fr-annot">${escapeHtml(fr)}</span>`;
+  });
+  // Vocab
+  parsed.vocabAnnotations.forEach(v => {
+    html += ` <span class="vocab-annot">${escapeHtml(v)}</span>`;
+  });
+  // Checks
+  parsed.checks.forEach(c => {
+    html += `<span class="check-annot">${escapeHtml(c)}</span>`;
+  });
+
+  el.innerHTML = html;
+  document.getElementById('chatBody').appendChild(el);
+
+  // Reprise indicator
+  if (parsed.hasReprise) {
+    const rep = document.createElement('div');
+    rep.className = 'msg reprise';
+    rep.textContent = '— reprise de scene —';
+    document.getElementById('chatBody').appendChild(rep);
+  }
+
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  const cb = document.getElementById('chatBody');
+  requestAnimationFrame(() => { cb.scrollTop = cb.scrollHeight; });
+}
+
+// ── PARSE AI REPLY ──
+function parseReply(raw) {
+  const frAnnotations = [];
+  const vocabAnnotations = [];
+  const checks = [];
+  const observations = [];
+
+  // Extract [FR:...]
+  (raw.match(/\[FR:(.*?)\]/gs) || []).forEach(m => {
+    frAnnotations.push(m.replace(/\[FR:(.*?)\]/s, '$1').trim());
+  });
+  // Extract [VOCAB:...]
+  (raw.match(/\[VOCAB:(.*?)\]/gs) || []).forEach(m => {
+    vocabAnnotations.push(m.replace(/\[VOCAB:(.*?)\]/s, '$1').trim());
+  });
+  // Extract checks
+  (raw.match(/\[✓(.*?)\]/gs) || []).forEach(m => {
+    checks.push(m);
+  });
+  // Extract OBS
+  (raw.match(/\[OBS:(.*?)\]/gs) || []).forEach(m => {
+    const inner = m.replace(/\[OBS:(.*?)\]/s, '$1').trim();
+    observations.push(inner);
+    sessionObservations.push(inner);
+  });
+
+  const isHorsScene = /\[hors sc[eè]ne\]/i.test(raw);
+  const hasReprise = /\[reprend[s]?\]|\[reprise\]/i.test(raw);
+  const isBilan = /\[BILAN\]/i.test(raw);
+
+  // Clean text for display
+  let cleanText = raw
+    .replace(/\[FR:.*?\]/gs, '')
+    .replace(/\[VOCAB:.*?\]/gs, '')
+    .replace(/\[✓.*?\]/gs, '')
+    .replace(/\[OBS:.*?\]/gs, '')
+    .replace(/\[BILAN\]|\[\/BILAN\]/gi, '')
+    .replace(/\[hors sc[eè]ne\]/gi, '')
+    .replace(/\[reprend[s]?\]/gi, '')
+    .replace(/\[reprise\]/gi, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  return { cleanText, frAnnotations, vocabAnnotations, checks, observations, isHorsScene, hasReprise, isBilan };
+}
+
+// ── DETECT LANGUAGE ──
+function detectLanguage(text) {
+  const lower = text.toLowerCase();
+  const isFrench = FRENCH_INDICATORS.some(w => lower.includes(w));
+  if (isFrench) return 'french';
+  // Also check for ? with French words
+  if (/[àâéèêëïîôùûüç]/.test(lower)) return 'french';
+  return 'english';
+}
+
+// ── SYSTEM PROMPT ──
+function buildSystemPrompt() {
+  const phase = currentPhase;
+  const phaseDesc = {
+    1: "Phase 1 — Fondations. Patient, pedagogique, traductions systematiques. Debit lent, articulation maximale. Reponds a toutes les questions FR sans sourciller. Speak slowly and clearly. Pause between each sentence. Articulate every word distinctly. No contractions. Like a language teacher.",
+    2: "Phase 2 — Consolidation. Plus direct, corrections immediates, reduis les traductions. Debit normal, prononciation soignee. Speak at normal pace but with clear pronunciation. Use basic contractions (I'm, we're, you'll). Like a professional.",
+    3: "Phase 3 — Fluidite. Exigeant, peu indulgent, situations stressantes. Debit naturel avec contractions: gonna, wanna, d'you, kinda. Speak at natural conversational pace. Use full range of contractions and natural reductions. Vary intonation naturally.",
+    4: "Phase 4 — Autonomie. Presque silencieux, intervient peu. 'Good.' suffit. Debit rapide, accents varies. Speak fast, naturally, with varied accents. No accommodation. Real world speed. The learner must adapt."
+  };
+
+  const weakScenarios = Object.entries(stats.scenarios)
+    .filter(([,v]) => v.score_moyen !== null && v.score_moyen < 50)
+    .map(([k,v]) => `${SCENARIO_LABELS[k]}: ${v.score_moyen}%`);
+
+  const persistentLacunes = stats.lacunes_globales
+    .filter(l => (l.count || 0) >= 2)
+    .map(l => l.topic);
+
+  const reportType = shouldTriggerReport();
+
+  return `Tu es Gusti, un Balinais chaleureux et malin, coach d'anglais pour Dume (francophone, debutant-intermediaire en anglais, passione de voyages Bali/Lombok).
+
+CONTEXTE: Voyage simule immersif. Tu joues TOUS les personnages (receptionniste, chauffeur, serveur, pilote, etc.). Tu enchaines les scenes. Tu pilotes tout. Aucun menu. Dume n'a qu'a parler.
+
+${phaseDesc[phase]}
+
+SCENES DISPONIBLES: Avion, Aeroport, Taxi, Hotel (arrivee/demandes/problemes/checkout), Excursions, Shopping, Restaurant (reserver/commander/problemes/addition), Pharmacie/Medecin, Perte & Vol, Nombres & Heures.
+
+REGLES FONDAMENTALES:
+1. Quand Dume pose une question en francais → sors du personnage, reponds en francais (court, concret, 3-5 lignes max), puis reprends la scene exactement ou elle en etait. Marque [hors scene] avant la reponse FR et [reprend] apres.
+2. Utilise ces balises dans tes reponses:
+   [FR: traduction ou explication] — annotation francaise
+   [VOCAB: mot = traduction] — vocabulaire
+   [✓ point valide] — ce que Dume a bien dit
+   [OBS:LACUNE:sujet] — lacune detectee
+   [OBS:ACQUIS:sujet] — point acquis
+   [OBS:QUESTION_FR:sujet] — question posee en francais
+   [OBS:COMPREHENSION:XX] — score comprehension (0-100)
+   [OBS:HESITATION_VOCAL:Xs] — hesitation vocale
+3. Integre TOUJOURS des chiffres, heures, prix dans les scenes (point faible connu).
+4. Teste la comprehension passive: joue un personnage qui dit quelque chose, arrete-toi, demande a Dume de reformuler en francais ce qu'il a compris. Evalue et note [OBS:COMPREHENSION:XX].
+5. En fin de session (quand on te le demande), donne un [BILAN] avec: score estime, scenarios pratiques, lacunes, acquis, conseil.
+6. Jamais juger. Jamais faire sentir une question stupide. Tu as tout vu.
+7. Tu ne te repetes pas sauf si Dume le demande.${phase >= 3 ? ' En phase 3+, une repetition max, notee.' : ''}${phase >= 4 ? ' En phase 4, zero repetition: "In real life, the pilot says it once. So do I."' : ''}
+
+${weakScenarios.length ? 'SCENARIOS FAIBLES (prioritaires): ' + weakScenarios.join(', ') : ''}
+${persistentLacunes.length ? 'LACUNES PERSISTANTES (a integrer dans les scenes): ' + persistentLacunes.join(', ') : ''}
+
+STATS: ${stats.meta.total_sessions} sessions, ${stats.meta.total_echanges} echanges, phase ${phase}.
+
+${reportType ? `RAPPORT SPONTANE A GENERER: type "${reportType}". Integre-le naturellement apres quelques echanges.` : ''}
+
+Commence directement dans la scene. Pas de menu. Pas de question "que veux-tu pratiquer". Tu decides. C'est toi le pilote.`;
+}
+
+// ── API CALL ──
+async function callAPI(systemPrompt, messages) {
+  if (!config.apiKey) return null;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': config.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: config.model,
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages.map(m => ({ role: m.role, content: m.content }))
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('API error:', res.status, err);
+      return null;
+    }
+
+    const data = await res.json();
+    return data.content?.[0]?.text || null;
+  } catch (e) {
+    console.error('API call failed:', e);
+    return null;
+  }
+}
+
+// ── OBSERVATIONS ──
+function processObservations() {
+  sessionObservations.forEach(obs => {
+    const parts = obs.split(':');
+    const type = parts[0];
+    const topic = parts.slice(1).join(':').trim();
+
+    if (type === 'LACUNE') {
+      const existing = stats.lacunes_globales.find(l => l.topic === topic);
+      if (existing) { existing.count = (existing.count || 1) + 1; existing.last = new Date().toISOString(); }
+      else stats.lacunes_globales.push({ topic, count: 1, first: new Date().toISOString(), last: new Date().toISOString() });
+    }
+    if (type === 'ACQUIS') {
+      // Remove from lacunes if mastered
+      stats.lacunes_globales = stats.lacunes_globales.filter(l => l.topic !== topic);
+    }
+  });
+}
+
+// ── REPORTS ──
+function shouldTriggerReport() {
+  const s = stats.meta.total_sessions;
+  const lastReport = stats.meta.sessions_au_dernier_rapport || 0;
+
+  if (s === 3 && lastReport < 3) return 'initial';
+  if (s >= 72) return '6months';
+  if ([12, 36, 60].includes(s) && lastReport < s) return 'phase_end';
+  if (s > 0 && s % 10 === 0 && lastReport < s) return 'milestone';
+  if (s - lastReport >= 7) return 'weekly';
+
+  // Alert: persistent lacune
+  const persistent = stats.lacunes_globales.filter(l => (l.count || 0) >= 3);
+  if (persistent.length > 0 && s - lastReport >= 3) return 'alert';
+
+  return null;
+}
+
+function checkReportTrigger() {
+  const type = shouldTriggerReport();
+  if (type) {
+    stats.meta.dernier_rapport = new Date().toISOString();
+    stats.meta.sessions_au_dernier_rapport = stats.meta.total_sessions;
+  }
+}
+
+// ── GITHUB SYNC ──
+async function syncToGitHub(data) {
+  const token = config.ghToken;
+  if (!token) return;
+
+  try {
+    const getRes = await fetch(
+      `https://api.github.com/repos/${REPO}/contents/${SYNC_PATH}`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    const existing = getRes.ok ? await getRes.json() : {};
+    const sha = existing.sha || null;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+    await fetch(`https://api.github.com/repos/${REPO}/contents/${SYNC_PATH}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Auto-sync ${new Date().toLocaleDateString('fr-FR')}`,
+        content,
+        ...(sha && { sha })
+      })
+    });
+    stats.meta.derniere_sync_github = new Date().toISOString();
+    saveStats();
+    updateHomeScreen();
+  } catch (e) {
+    console.error('GitHub sync error:', e);
+  }
+}
+
+// ── STATS MODAL ──
+function renderStatsModal() {
+  const container = document.getElementById('statsContent');
+  let html = '';
+
+  // Global
+  const allScores = Object.values(stats.scenarios).flatMap(s => s.scores);
+  const avg = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : 0;
+
+  html += `<div class="stats-section"><h3>Vue globale</h3>`;
+  html += `<div class="bar-row"><span class="bar-label">Score moyen</span><div class="bar-track"><div class="bar-fill" style="width:${avg}%;background:${avg>=70?'var(--green)':avg>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-val">${avg}%</span></div>`;
+  html += `<div style="font-size:11px;color:var(--muted);margin-top:8px">${stats.meta.total_sessions} sessions | ${stats.meta.total_echanges} echanges | ${stats.meta.jours_actifs.length} jours actifs</div>`;
+  html += `</div>`;
+
+  // Scenarios
+  html += `<div class="stats-section"><h3>Par scenario</h3>`;
+  Object.entries(stats.scenarios).forEach(([id, s]) => {
+    if (s.sessions === 0) return;
+    const sc = s.score_moyen || 0;
+    html += `<div class="bar-row"><span class="bar-label">${SCENARIO_LABELS[id] || id}</span><div class="bar-track"><div class="bar-fill" style="width:${sc}%;background:${sc>=70?'var(--green)':sc>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-val">${sc}%</span></div>`;
+  });
+  html += `</div>`;
+
+  // Lacunes
+  if (stats.lacunes_globales.length) {
+    html += `<div class="stats-section"><h3>Lacunes</h3>`;
+    stats.lacunes_globales.forEach(l => {
+      const color = (l.count || 1) >= 3 ? 'var(--red)' : 'var(--gold)';
+      html += `<div style="font-size:12px;color:${color};margin:3px 0">${l.topic} (x${l.count || 1})</div>`;
+    });
+    html += `</div>`;
+  }
+
+  container.innerHTML = html || '<p style="color:var(--muted);font-size:13px">Pas encore de donnees. Lance ta premiere session !</p>';
+}
+
+// ── UTILS ──
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
