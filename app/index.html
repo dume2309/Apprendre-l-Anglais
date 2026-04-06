@@ -344,6 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadConfig() {
   const raw = localStorage.getItem(CONFIG_KEY);
   config = raw ? JSON.parse(raw) : { apiKey:'', model:'google/gemini-2.0-flash-exp:free', ghToken:'', phase:1 };
+  // Migration: reset old Gemini/Anthropic models to OpenRouter
+  if (config.model && !config.model.includes('/')) {
+    config.model = 'google/gemini-2.0-flash-exp:free';
+    saveConfig();
+  }
   currentPhase = config.phase || 1;
 }
 function saveConfig() {
@@ -700,7 +705,7 @@ async function startSession() {
   removeLoadingMessage();
 
   if (!reply) {
-    addMessage('ai', 'Erreur de connexion a Gemini. ' + (lastApiError || 'Verifie ta cle API dans les reglages.'));
+    addMessage('ai', 'Erreur de connexion. ' + (lastApiError || 'Verifie ta cle API dans les reglages.'));
     return;
   }
 
