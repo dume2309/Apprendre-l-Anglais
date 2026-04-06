@@ -199,9 +199,9 @@ input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;bac
     <input type="password" id="cfgApiKey" placeholder="sk-or-...">
     <label>Modele</label>
     <select id="cfgModel">
-      <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (gratuit)</option>
-      <option value="meta-llama/llama-4-maverick:free">Llama 4 Maverick (gratuit)</option>
-      <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (gratuit)</option>
+      <option value="qwen/qwen3.6-plus:free">Qwen 3.6 Plus (gratuit, recommande)</option>
+      <option value="nvidia/nemotron-3-super-120b-a12b:free">Nemotron 120B (gratuit)</option>
+      <option value="minimax/minimax-m2.5:free">MiniMax M2.5 (gratuit)</option>
     </select>
     <label>Token GitHub (optionnel — sync progression)</label>
     <input type="password" id="cfgGhToken" placeholder="ghp_...">
@@ -343,10 +343,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── CONFIG ──
 function loadConfig() {
   const raw = localStorage.getItem(CONFIG_KEY);
-  config = raw ? JSON.parse(raw) : { apiKey:'', model:'google/gemini-2.0-flash-exp:free', ghToken:'', phase:1 };
-  // Migration: reset old Gemini/Anthropic models to OpenRouter
-  if (config.model && !config.model.includes('/')) {
-    config.model = 'google/gemini-2.0-flash-exp:free';
+  config = raw ? JSON.parse(raw) : { apiKey:'', model:'qwen/qwen3.6-plus:free', ghToken:'', phase:1 };
+  // Migration: reset invalid models to default
+  const validModels = ['qwen/qwen3.6-plus:free','nvidia/nemotron-3-super-120b-a12b:free','minimax/minimax-m2.5:free'];
+  if (!validModels.includes(config.model)) {
+    config.model = 'qwen/qwen3.6-plus:free';
     saveConfig();
   }
   currentPhase = config.phase || 1;
@@ -418,7 +419,7 @@ function bindEvents() {
   document.getElementById('btnBack').addEventListener('click', endSession);
   document.getElementById('btnSettings').addEventListener('click', () => {
     document.getElementById('cfgApiKey').value = config.apiKey || '';
-    document.getElementById('cfgModel').value = config.model || 'google/gemini-2.0-flash-exp:free';
+    document.getElementById('cfgModel').value = config.model || 'qwen/qwen3.6-plus:free';
     document.getElementById('cfgGhToken').value = config.ghToken || '';
     document.getElementById('cfgPhase').value = currentPhase;
     openModal('settingsModal');
