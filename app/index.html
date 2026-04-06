@@ -12,1177 +12,559 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & BASE ── */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:'Sora',sans-serif;background:var(--bg);color:var(--text)}
 :root{
   --bg:#0c0e14;--s1:#13161f;--s2:#191d2d;--s3:#20253a;
   --bd:#282d45;--gold:#e8b84b;--teal:#3ecfb2;--red:#f06b6b;
   --blue:#5b9cf5;--green:#4ade80;--text:#e4e6f2;--muted:#5f6480;
-  --r:12px;--fn:'Sora',sans-serif;
+  --r:12px;
 }
 h1,h2,h3{font-family:'Lora',serif}
-button{font-family:var(--fn);border:none;cursor:pointer;min-height:44px;border-radius:var(--r)}
-input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;background:transparent;color:var(--text)}
-
-/* ── SCREENS ── */
+button{font-family:'Sora',sans-serif;border:none;cursor:pointer;min-height:44px;border-radius:var(--r)}
 .scr{position:absolute;inset:0;height:100dvh;display:flex;flex-direction:column;transition:opacity .3s,transform .3s}
-.scr.hidden{opacity:0;pointer-events:none;transform:translateY(20px)}
+.scr.off{opacity:0;pointer-events:none;transform:translateY(20px)}
 
-/* ══════════════ HOME SCREEN ══════════════ */
-#sh{justify-content:center;align-items:center;padding:24px;text-align:center;gap:20px}
-#sh .logo{font-size:42px;margin-bottom:-8px}
-#sh h1{font-size:22px;color:var(--text);letter-spacing:-.5px}
-#sh .gusti-avatar{width:80px;height:80px;border-radius:50%;background:var(--s3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;margin:8px auto 0}
-#sh .quote{color:var(--muted);font-style:italic;font-size:13px;max-width:280px;min-height:40px;line-height:1.5}
-.stats-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0}
-.stat-card{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 16px;min-width:70px;text-align:center}
-.stat-card .sv{font-size:20px;font-weight:700;color:var(--gold)}
-.stat-card .sl{font-size:10px;color:var(--muted);margin-top:2px}
-.info-row{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);margin:4px 0}
-.info-row span{display:flex;align-items:center;gap:6px;justify-content:center}
-#btnStart{background:var(--gold);color:var(--bg);font-size:16px;font-weight:600;padding:14px 48px;border-radius:28px;letter-spacing:.3px;margin-top:8px;transition:transform .15s,box-shadow .15s}
-#btnStart:active{transform:scale(.96);box-shadow:0 0 0 6px rgba(232,184,75,.15)}
+/* ══ HOME ══ */
+#home{justify-content:center;align-items:center;padding:24px;text-align:center;gap:16px}
+#home .logo{font-size:42px}
+#home h1{font-size:22px;letter-spacing:-.5px}
+.avatar{width:80px;height:80px;border-radius:50%;background:var(--s3);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto}
+.quote{color:var(--muted);font-style:italic;font-size:13px;max-width:280px;min-height:36px;line-height:1.5}
+.srow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.sc{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px;min-width:68px;text-align:center}
+.sc .v{font-size:20px;font-weight:700;color:var(--gold)}
+.sc .l{font-size:10px;color:var(--muted);margin-top:2px}
+.info{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px;align-items:center}
+#btnGo{background:var(--gold);color:var(--bg);font-size:16px;font-weight:600;padding:14px 48px;border-radius:28px;margin-top:4px;transition:transform .15s}
+#btnGo:active{transform:scale(.96)}
 
-/* ══════════════ CHAT SCREEN ══════════════ */
-#sc{background:var(--bg)}
-.chat-header{display:flex;align-items:center;padding:12px 16px;background:var(--s1);border-bottom:1px solid var(--bd);gap:10px;flex-shrink:0}
-.chat-header .back{background:none;color:var(--muted);font-size:20px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
-.chat-header .title{flex:1;font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--text)}
-.chat-header .title small{font-weight:400;color:var(--muted);font-size:11px;display:block;font-family:'Sora',sans-serif}
-.chat-header .hbtn{background:none;color:var(--muted);font-size:16px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+/* ══ SESSION ══ */
+#sess{background:var(--bg)}
+.hdr{display:flex;align-items:center;padding:12px 16px;background:var(--s1);border-bottom:1px solid var(--bd);gap:10px;flex-shrink:0}
+.hdr .bk{background:none;color:var(--muted);font-size:20px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.hdr .tt{flex:1;font-family:'Lora',serif;font-size:15px;font-weight:600}
+.hdr .tt small{font-weight:400;color:var(--muted);font-size:11px;display:block;font-family:'Sora',sans-serif}
+.hdr .hb{background:none;color:var(--muted);font-size:16px;min-height:36px;width:36px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.sbar{display:flex;align-items:center;justify-content:center;gap:16px;padding:6px;background:var(--s1);border-bottom:1px solid var(--bd);font-size:11px;color:var(--muted);flex-shrink:0}
+.chat{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.55;animation:mIn .25s ease}
+@keyframes mIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.g{align-self:flex-start;background:var(--s2);border:1px solid var(--bd);border-bottom-left-radius:4px}
+.msg.u{align-self:flex-end;background:var(--s3);border:1px solid var(--bd);border-bottom-right-radius:4px;color:var(--teal)}
+.msg .tag{font-size:10px;font-weight:600;margin-bottom:4px;display:block}
+.msg.g .tag{color:var(--gold)}
+.msg.u .tag{color:var(--teal)}
+.msg .fr{display:block;margin-top:8px;padding:6px 10px;background:rgba(232,184,75,.08);border-radius:8px;font-size:12px;color:var(--gold);font-style:italic}
+.msg .voc{display:block;margin-top:4px;font-size:11px;color:var(--teal)}
 
-.session-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:6px 16px;background:var(--s1);border-bottom:1px solid var(--bd);font-size:11px;color:var(--muted);flex-shrink:0}
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:8px;padding:8px 16px;align-self:stretch}
+.cho{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 16px;font-size:14px;color:var(--text);text-align:left;transition:all .15s;min-height:48px}
+.cho:active{transform:scale(.98)}
+.cho.correct{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green)}
+.cho.wrong{border-color:var(--red);background:rgba(240,107,107,.1);color:var(--red)}
+.cho:disabled{opacity:.6;cursor:default}
 
-/* Messages */
-.chat-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.55;word-break:break-word;animation:msgIn .25s ease}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.msg.ai{align-self:flex-start;background:var(--s2);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.msg.user{align-self:flex-end;background:var(--s3);border:1px solid var(--bd);border-bottom-right-radius:4px;color:var(--teal)}
-.msg .mtag{font-size:10px;font-weight:600;margin-bottom:4px;display:block}
-.msg.ai .mtag{color:var(--gold)}
-.msg.user .mtag{color:var(--teal)}
+/* Bottom zone */
+.bzone{padding:12px 16px;padding-bottom:env(safe-area-inset-bottom,16px);background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+.bzone .status{font-size:12px;color:var(--muted);min-height:18px;text-align:center}
+.bzone .acts{display:flex;gap:12px}
+.bzone .abtn{background:var(--s2);color:var(--muted);font-size:13px;padding:8px 16px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.bzone .abtn.primary{background:var(--gold);color:var(--bg);font-weight:600}
 
-/* Hors scene */
-.msg.hors-scene{background:var(--s3);border:1px solid rgba(232,184,75,.25);border-left:3px solid var(--gold)}
-.msg.hors-scene .mtag{color:var(--gold)}
-.msg.reprise{background:transparent;border:1px dashed var(--bd);font-size:12px;color:var(--muted);text-align:center;align-self:center;max-width:70%;padding:6px 14px}
+/* Wave */
+.wave{display:flex;gap:3px;align-items:center;justify-content:center;height:24px}
+.wave span{width:3px;background:var(--gold);border-radius:2px;animation:w .8s ease-in-out infinite}
+.wave span:nth-child(2){animation-delay:.1s}
+.wave span:nth-child(3){animation-delay:.2s}
+.wave span:nth-child(4){animation-delay:.3s}
+@keyframes w{0%,100%{height:4px}50%{height:20px}}
+
+/* Progress bar */
+.pbar{width:100%;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.pbar .fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s}
 
 /* Bilan */
-.msg.bilan{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--gold);border-left:3px solid var(--gold)}
-.msg.bilan .mtag{color:var(--gold)}
+.bilan{background:var(--s2);border:1px solid var(--gold);border-radius:var(--r);padding:16px;margin:8px 0}
+.bilan h3{font-size:14px;color:var(--gold);margin-bottom:8px}
+.bilan .row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--bd)}
+.bilan .row:last-child{border:none}
+.bilan .row .lb{color:var(--muted)}
+.bilan .row .vl{font-weight:600}
+.bilan .row .vl.good{color:var(--green)}
+.bilan .row .vl.mid{color:var(--gold)}
+.bilan .row .vl.bad{color:var(--red)}
 
-/* FR annotations inline */
-.fr-annot{display:block;margin-top:6px;padding:6px 10px;background:rgba(232,184,75,.08);border-radius:8px;font-size:12px;color:var(--gold);font-style:italic}
-.vocab-annot{display:inline-block;margin-top:4px;padding:2px 8px;background:rgba(62,207,178,.1);border-radius:6px;font-size:11px;color:var(--teal)}
-.check-annot{color:var(--green);font-size:12px;display:block;margin-top:4px}
-
-/* ── VOICE ZONE ── */
-.voice-zone{padding:16px;padding-bottom:env(safe-area-inset-bottom,16px);background:var(--s1);border-top:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0}
-
-.mic-btn{width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:28px;display:flex;align-items:center;justify-content:center;transition:all .2s;border:none;position:relative}
-.mic-btn.listening{background:var(--red);animation:pulse 1s infinite;box-shadow:0 0 0 12px rgba(240,107,107,.2)}
-.mic-btn.processing{background:var(--muted)}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(240,107,107,.4)}50%{box-shadow:0 0 0 16px rgba(240,107,107,0)}}
-
-.voice-hint{font-size:11px;color:var(--muted);text-align:center;min-height:16px}
-.interim-text{font-size:13px;color:var(--muted);font-style:italic;min-height:18px;text-align:center;max-width:90%}
-
-.voice-actions{display:flex;gap:16px;align-items:center}
-.voice-actions button{background:var(--s2);color:var(--muted);font-size:13px;padding:6px 14px;border-radius:20px;display:flex;align-items:center;gap:4px;min-height:34px}
-
-/* Wave indicator */
-.wave-indicator{display:flex;gap:3px;align-items:center;justify-content:center;height:24px}
-.wave-bar{width:3px;background:var(--gold);border-radius:2px;animation:wave .8s ease-in-out infinite}
-.wave-bar:nth-child(2){animation-delay:.1s}
-.wave-bar:nth-child(3){animation-delay:.2s}
-.wave-bar:nth-child(4){animation-delay:.3s}
-.wave-bar:nth-child(5){animation-delay:.15s}
-@keyframes wave{0%,100%{height:4px}50%{height:20px}}
-
-/* Mic active dot */
-.mic-active-dot{width:10px;height:10px;border-radius:50%;background:var(--red);animation:pulse 1s ease-in-out infinite;margin:0 auto}
-
-/* ── KEYBOARD INPUT ── */
-.inp-row{display:flex;gap:8px;padding:10px 16px;padding-bottom:env(safe-area-inset-bottom,16px);background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0}
-.inp-row input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:20px;padding:10px 16px;font-size:14px;color:var(--text)}
-.inp-row input::placeholder{color:var(--muted);font-size:13px}
-.inp-row .send-btn{width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--bg);font-size:18px;display:flex;align-items:center;justify-content:center}
-
-/* ══════════════ MODALS ══════════════ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal-overlay.show{opacity:1;pointer-events:all}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-bg.show{opacity:1;pointer-events:all}
 .modal{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;width:100%;max-width:380px;max-height:80dvh;overflow-y:auto}
-.modal h2{font-size:18px;margin-bottom:16px;color:var(--gold)}
-.modal label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
-.modal input,.modal select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 14px;font-size:14px;color:var(--text)}
-.modal .mbtn-row{display:flex;gap:8px;margin-top:20px}
-.modal .mbtn{flex:1;padding:10px;text-align:center;border-radius:var(--r);font-weight:600;font-size:14px}
-.modal .mbtn.primary{background:var(--gold);color:var(--bg)}
-.modal .mbtn.secondary{background:var(--s3);color:var(--muted)}
-
-/* Stats modal */
-.stats-section{margin:12px 0}
-.stats-section h3{font-size:13px;color:var(--teal);margin-bottom:8px}
-.bar-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
-.bar-label{width:100px;color:var(--muted);text-overflow:ellipsis;overflow:hidden;white-space:nowrap;flex-shrink:0}
-.bar-track{flex:1;height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;transition:width .4s}
-.bar-val{width:32px;text-align:right;color:var(--text);font-weight:600;flex-shrink:0}
-
-/* ── HIDDEN UTILITY ── */
-.hidden{display:none!important}
+.modal h2{font-size:18px;margin-bottom:12px;color:var(--gold)}
+.bar-r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:12px}
+.bar-l{width:90px;color:var(--muted);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-t{flex:1;height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
+.bar-f{height:100%;border-radius:4px;transition:width .4s}
+.bar-v{width:30px;text-align:right;font-weight:600;flex-shrink:0}
+.mbtn{padding:10px;text-align:center;border-radius:var(--r);font-weight:600;font-size:14px;width:100%;background:var(--gold);color:var(--bg);margin-top:16px}
 </style>
 </head>
 <body>
 
-<!-- ══════════════ HOME SCREEN ══════════════ -->
-<div id="sh" class="scr">
+<!-- ══ HOME ══ -->
+<div id="home" class="scr">
   <div class="logo">&#9992;&#65039;</div>
   <h1>Apprendre l'Anglais</h1>
-  <div class="gusti-avatar">&#127802;</div>
-  <div class="quote" id="quoteEl"></div>
-  <div class="stats-row">
-    <div class="stat-card"><div class="sv" id="stSess">0</div><div class="sl">Sessions</div></div>
-    <div class="stat-card"><div class="sv" id="stExch">0</div><div class="sl">Echanges</div></div>
-    <div class="stat-card"><div class="sv" id="stScore">--</div><div class="sl">Score</div></div>
-    <div class="stat-card"><div class="sv" id="stDays">0</div><div class="sl">Jours</div></div>
+  <div class="avatar">&#127802;</div>
+  <div class="quote" id="quote"></div>
+  <div class="srow">
+    <div class="sc"><div class="v" id="hSess">0</div><div class="l">Sessions</div></div>
+    <div class="sc"><div class="v" id="hScore">--</div><div class="l">Score</div></div>
+    <div class="sc"><div class="v" id="hDays">0</div><div class="l">Jours</div></div>
+    <div class="sc"><div class="v" id="hPhase">1</div><div class="l">Phase</div></div>
   </div>
-  <div class="info-row">
-    <span id="infoLacunes"></span>
-    <span id="infoLast"></span>
-    <span id="infoSync"></span>
-  </div>
-  <button id="btnStart">&#127919; Commencer</button>
+  <div class="info" id="homeInfo"></div>
+  <button id="btnGo">&#127919; Commencer</button>
 </div>
 
-<!-- ══════════════ CHAT SCREEN ══════════════ -->
-<div id="sc" class="scr hidden">
-  <div class="chat-header">
-    <button class="back" id="btnBack">&#8592;</button>
-    <div class="title">&#127802; Gusti &middot; Session<small id="sessionPhaseLabel">Phase 1</small></div>
-    <button class="hbtn" id="btnStats">&#128202;</button>
-    <button class="hbtn" id="btnSettings">&#9881;&#65039;</button>
+<!-- ══ SESSION ══ -->
+<div id="sess" class="scr off">
+  <div class="hdr">
+    <button class="bk" id="btnBack">&#8592;</button>
+    <div class="tt" id="sessTitle">&#127802; Gusti<small id="sessScene">--</small></div>
+    <button class="hb" id="btnStat">&#128202;</button>
   </div>
-  <div class="session-bar">
-    <span>Echanges : <b id="exchCount">0</b></span>
-    <span id="sessionScore"></span>
+  <div class="sbar">
+    <span>Echange <b id="exN">0</b>/<b id="exT">0</b></span>
+    <div class="pbar" style="width:120px"><div class="fill" id="pFill" style="width:0%"></div></div>
+    <span id="exScore"></span>
   </div>
-  <div class="chat-body" id="chatBody"></div>
-
-  <!-- Voice zone (default) -->
-  <div class="voice-zone" id="voiceZone">
-    <div class="interim-text" id="interimEl"></div>
-    <div id="voiceIndicator"></div>
-    <button class="mic-btn" id="micBtn">&#127908;</button>
-    <div class="voice-hint" id="voiceHint"></div>
-    <div class="voice-actions">
-      <button id="btnKeyboard">&#9000;&#65039; Clavier</button>
-      <button id="btnReplay">&#128266; Ecouter</button>
-    </div>
-  </div>
-
-  <!-- Keyboard input (hidden by default) -->
-  <div class="inp-row hidden" id="kbRow">
-    <input type="text" id="kbInput" placeholder="Reponds en anglais... ou pose une question en francais" autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="send-btn" id="btnSend">&#10148;</button>
-    <button class="send-btn" id="btnMic" style="background:var(--s3);color:var(--muted);margin-left:-4px">&#127908;</button>
+  <div class="chat" id="chat"></div>
+  <div class="bzone" id="bzone">
+    <div class="status" id="status"></div>
+    <div class="acts" id="acts"></div>
   </div>
 </div>
 
-<!-- ══════════════ SETTINGS MODAL ══════════════ -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <h2>&#9881;&#65039; Configuration</h2>
-    <label>Cle API Gemini (gratuite — prioritaire)</label>
-    <input type="password" id="cfgGeminiKey" placeholder="AIza...">
-    <label>Cle API OpenRouter (gratuite — backup)</label>
-    <input type="password" id="cfgApiKey" placeholder="sk-or-...">
-    <label>Token GitHub (optionnel — sync progression)</label>
-    <input type="password" id="cfgGhToken" placeholder="ghp_...">
-    <label>Phase actuelle</label>
-    <select id="cfgPhase">
-      <option value="1">Phase 1 — Fondations</option>
-      <option value="2">Phase 2 — Consolidation</option>
-      <option value="3">Phase 3 — Fluidite</option>
-      <option value="4">Phase 4 — Autonomie</option>
-    </select>
-    <div class="mbtn-row">
-      <button class="mbtn secondary" onclick="closeModal('settingsModal')">Annuler</button>
-      <button class="mbtn primary" id="btnSaveSettings">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ STATS MODAL ══════════════ -->
-<div class="modal-overlay" id="statsModal">
+<!-- Stats modal -->
+<div class="modal-bg" id="statsMod">
   <div class="modal">
     <h2>&#128202; Progression</h2>
-    <div id="statsContent"></div>
-    <div class="mbtn-row">
-      <button class="mbtn primary" onclick="closeModal('statsModal')">Fermer</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ MICRO PERMISSION MODAL ══════════════ -->
-<div class="modal-overlay" id="micModal">
-  <div class="modal" style="text-align:center">
-    <div style="font-size:48px;margin-bottom:12px">&#127908;</div>
-    <h2 style="color:var(--text)">Autoriser le micro</h2>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">
-      L'appli a besoin du micro pour les sessions vocales.<br>
-      Safari va te demander l'autorisation — appuie sur "Autoriser".
-    </p>
-    <div class="mbtn-row" style="flex-direction:column;gap:10px">
-      <button class="mbtn primary" id="btnEnableMic">Activer le micro</button>
-      <button class="mbtn secondary" id="btnUseKeyboard">Utiliser le clavier</button>
-    </div>
+    <div id="statsBody"></div>
+    <button class="mbtn" onclick="document.getElementById('statsMod').classList.remove('show')">Fermer</button>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-// APPRENDRE L'ANGLAIS — Application complete
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// APPRENDRE L'ANGLAIS — Sans IA, 100% local
+// ═══════════════════════════════════════════
 
-// ── CONSTANTS ──
-const STORAGE_KEY = 'anglais_v1';
-const CONFIG_KEY = 'anglais_config';
-const REPO = 'dume2309/Apprendre-l-Anglais';
-const SYNC_PATH = 'suivi/progression.json';
+const STORAGE='anglais_v2';
 
-const SCENARIO_IDS = [
-  'hotel_arrivee','hotel_demandes','hotel_problemes','hotel_checkout',
-  'taxi_commander','taxi_negocier','taxi_directions','transport_bus',
-  'resto_reserver','resto_commander','resto_problemes','resto_addition',
-  'excursion_reserver','excursion_groupe','excursion_annul',
-  'shopping_prix','shopping_tailles','urgence_sante','urgence_papiers',
-  'nombres_heures','pratique_libre'
+// ── SCENARIOS ──
+const SCENARIOS = [
+{
+  id:'avion_hotesse', name:'Avion — Hotesse', icon:'&#9992;&#65039;',
+  steps:[
+    {g:"Hello! Welcome on board. I am Sarah, your flight attendant today.",fr:"Bonjour ! Bienvenue a bord. Je suis Sarah, votre hotesse de l'air.",voc:"welcome=bienvenue|on board=a bord|flight attendant=hotesse de l'air",
+     q:"What would you like to drink? We have water, orange juice, or coffee.",qfr:"Que voulez-vous boire ? Eau, jus d'orange, ou cafe.",
+     choices:["I would like some water, please.","Orange juice, please.","A coffee, please."],
+     accept:[0,1,2], feedback:["Good! Water is always a safe choice.","Great choice!","Perfect! Do you take sugar?"]},
+    {g:"We are flying to Denpasar, Bali. The flight time is fourteen hours and thirty minutes.",fr:"Nous volons vers Denpasar, Bali. Le vol dure 14 heures et 30 minutes.",voc:"flying=volons|flight time=duree du vol|hours=heures|minutes=minutes",
+     q:"Your seat is 24B. That is the middle seat, in row twenty-four. Would you like a blanket?",qfr:"Votre siege est le 24B, siege du milieu, rang 24. Voulez-vous une couverture ?",
+     choices:["Yes, please. I am a bit cold.","No, thank you. I am fine.","Yes, and a pillow too, please."],
+     accept:[0,1,2], feedback:["Here you go! Stay warm.","Alright! Let me know if you need anything.","Of course! Here is a blanket and a pillow."]},
+    {g:"Ladies and gentlemen, this is your captain speaking. We are cruising at thirty-five thousand feet. We expect to arrive fifteen minutes ahead of schedule.",fr:"Mesdames et messieurs, ici votre commandant. Nous volons a 35 000 pieds. Nous arriverons 15 minutes en avance.",voc:"captain=commandant|cruising=vol de croisiere|feet=pieds|ahead of schedule=en avance",
+     q:"Comprehension check! Qu'est-ce que le pilote a dit ? A quelle altitude vole l'avion et quand arrive-t-on ?",qfr:"",
+     choices:["35 000 pieds, 15 minutes en avance","30 000 pieds, 15 minutes en retard","35 000 pieds, 50 minutes en avance"],
+     accept:[0], feedback:["Excellent ! Tu as bien compris les chiffres !","Non... thirty-five thousand = 35 000, et ahead of schedule = en avance.","Presque ! L'altitude est bonne mais c'est fifteen = 15, pas fifty = 50."]}
+  ]
+},
+{
+  id:'aeroport_immigration', name:'Aeroport — Immigration', icon:'&#128747;',
+  steps:[
+    {g:"Good afternoon, sir. Welcome to Bali. May I see your passport, please?",fr:"Bonjour monsieur. Bienvenue a Bali. Puis-je voir votre passeport ?",voc:"passport=passeport|welcome=bienvenue",
+     q:"Here is my passport.",qfr:"",
+     choices:["Here is my passport.","Yes, here you go.","Of course. Here it is."],
+     accept:[0,1,2], feedback:["Perfect!","Very natural!","Great, polite and clear."]},
+    {g:"What is the purpose of your visit? How long will you be staying?",fr:"Quel est le but de votre visite ? Combien de temps restez-vous ?",voc:"purpose=but|visit=visite|how long=combien de temps|staying=rester",
+     q:"",qfr:"",
+     choices:["I am here on holiday. I will stay for two weeks.","Tourism. Ten days.","I am visiting for vacation. About twelve days."],
+     accept:[0,1,2], feedback:["Perfect answer! Clear and complete.","Short and efficient. That works!","Very good! Natural and polite."]},
+    {g:"Where will you be staying in Bali?",fr:"Ou allez-vous loger a Bali ?",voc:"where=ou|staying=loger",
+     q:"",qfr:"",
+     choices:["At the Grand Hyatt hotel in Nusa Dua.","I have a reservation at a hotel in Seminyak.","I will stay with friends in Ubud."],
+     accept:[0,1,2], feedback:["Enjoy Nusa Dua!","Seminyak is beautiful!","Ubud is wonderful! Enjoy."]},
+    {g:"Your visa costs thirty-five US dollars. Or five hundred thousand Indonesian rupiah.",fr:"Votre visa coute 35 dollars americains ou 500 000 roupies indonesiennes.",voc:"costs=coute|dollars=dollars|rupiah=roupies",
+     q:"Comprehension check! Combien coute le visa en dollars ?",qfr:"",
+     choices:["35 dollars","53 dollars","350 dollars"],
+     accept:[0], feedback:["Correct ! Thirty-five = 35.","Non, thirty-five = 35, pas 53.","Non, thirty-five = 35, pas 350."]}
+  ]
+},
+{
+  id:'taxi', name:'Taxi', icon:'&#128661;',
+  steps:[
+    {g:"Taxi! Where to, sir?",fr:"Taxi ! Ou allez-vous, monsieur ?",voc:"where to=ou allez-vous",
+     q:"",qfr:"",
+     choices:["To the Grand Hyatt hotel in Nusa Dua, please.","Can you take me to Seminyak, please?","Ubud, please. Do you know the way?"],
+     accept:[0,1,2], feedback:["Sure! About forty-five minutes from here.","Of course! About thirty minutes.","Yes, I know Ubud well. Let's go!"]},
+    {g:"Do you want to use the meter, or a fixed price? I can give you a good price — two hundred thousand rupiah.",fr:"Vous voulez le compteur ou un prix fixe ? Je vous fais un bon prix — 200 000 roupies.",voc:"meter=compteur|fixed price=prix fixe|good price=bon prix",
+     q:"",qfr:"",
+     choices:["Can you use the meter, please?","How about one hundred and fifty thousand?","Two hundred thousand is fine. Let's go."],
+     accept:[0,1,2], feedback:["OK, meter it is!","Hmm... one hundred and eighty? Deal?","Great! Let's go."]},
+    {g:"Sorry, sir. There is a lot of traffic today. A ceremony at the temple. It will take maybe thirty minutes more.",fr:"Desole monsieur. Il y a beaucoup de circulation. Une ceremonie au temple. Ca prendra 30 minutes de plus.",voc:"traffic=circulation|ceremony=ceremonie|temple=temple|thirty minutes=30 minutes",
+     q:"Comprehension check! Pourquoi y a-t-il du retard et combien de temps en plus ?",qfr:"",
+     choices:["Ceremonie au temple, 30 minutes de plus","Accident, 30 minutes de plus","Ceremonie au temple, 13 minutes de plus"],
+     accept:[0], feedback:["Tres bien ! Tu as compris la raison et le temps.","Non, c'est une ceremonie (ceremony), pas un accident.","La raison est bonne mais thirty = 30, pas thirteen = 13."]}
+  ]
+},
+{
+  id:'hotel_checkin', name:'Hotel — Arrivee', icon:'&#127976;',
+  steps:[
+    {g:"Good evening! Welcome to the Grand Hyatt. Do you have a reservation?",fr:"Bonsoir ! Bienvenue au Grand Hyatt. Avez-vous une reservation ?",voc:"good evening=bonsoir|reservation=reservation",
+     q:"",qfr:"",
+     choices:["Yes, I have a reservation under the name Dumè.","Good evening. Yes, under Dumè.","Hello! Yes, I booked online. The name is Dumè."],
+     accept:[0,1,2], feedback:["Let me check... Yes, I found it!","Welcome, Mr Dumè!","Ah yes, I can see your booking."]},
+    {g:"You have a double room with ocean view for seven nights. Check-out is on October twenty-first. Is that correct?",fr:"Vous avez une chambre double vue mer pour 7 nuits. Le depart est le 21 octobre. C'est correct ?",voc:"double room=chambre double|ocean view=vue mer|seven nights=7 nuits|check-out=depart",
+     q:"",qfr:"",
+     choices:["Yes, that is correct.","Actually, I booked for ten nights, not seven.","Yes. Can I also get a quiet room, please?"],
+     accept:[0,1,2], feedback:["Perfect! Here is your key.","Let me check again... You are right, ten nights!","Of course! I will give you room 512, very quiet floor."]},
+    {g:"Your room is number five twelve, on the fifth floor. The elevator is on your right. Breakfast is from six thirty to ten in the garden restaurant.",fr:"Votre chambre est la 512, au 5eme etage. L'ascenseur est a droite. Petit-dejeuner de 6h30 a 10h au restaurant du jardin.",voc:"fifth floor=5eme etage|elevator=ascenseur|breakfast=petit-dejeuner|garden=jardin",
+     q:"Comprehension check! A quel etage est la chambre et a quelle heure est le petit-dejeuner ?",qfr:"",
+     choices:["5eme etage, 6h30 a 10h","5eme etage, 7h a 10h30","15eme etage, 6h30 a 10h"],
+     accept:[0], feedback:["Parfait ! Tu as bien capte les chiffres.","Presque ! C'est six thirty = 6h30, et ten = 10h.","Non, fifth = 5eme, pas fifteenth = 15eme."]}
+  ]
+},
+{
+  id:'hotel_problemes', name:'Hotel — Problemes', icon:'&#128528;',
+  steps:[
+    {g:"Front desk, how can I help you?",fr:"Reception, comment puis-je vous aider ?",voc:"front desk=reception|how can I help=comment puis-je aider",
+     q:"",qfr:"",
+     choices:["Hello. The air conditioning in my room is not working.","Hi. I need extra towels, please.","Good morning. My room is very noisy. Can I change rooms?"],
+     accept:[0,1,2], feedback:["I am sorry about that. I will send someone right away.","Of course! I will send them to your room in ten minutes.","I apologize. Let me check if we have a quieter room available."]},
+    {g:"I am very sorry, sir. Our technician will come to your room in about twenty minutes. Is there anything else I can do?",fr:"Je suis desole monsieur. Notre technicien viendra dans environ 20 minutes. Puis-je faire autre chose ?",voc:"technician=technicien|twenty minutes=20 minutes|anything else=autre chose",
+     q:"",qfr:"",
+     choices:["Could I also get some extra pillows?","No, that is all. Thank you.","Yes, can you also check the hot water? It is not very hot."],
+     accept:[0,1,2], feedback:["Absolutely! How many would you like?","You are welcome. Sorry again for the inconvenience.","I will have the technician check both. Sorry for the trouble."]},
+    {g:"Good news, sir. We have fixed the air conditioning. Also, we would like to offer you a complimentary breakfast tomorrow as an apology.",fr:"Bonne nouvelle. La clim est reparee. Nous vous offrons un petit-dejeuner gratuit demain pour nous excuser.",voc:"fixed=repare|complimentary=gratuit/offert|apology=excuses",
+     q:"Comprehension check! Qu'est-ce que l'hotel t'offre pour s'excuser ?",qfr:"",
+     choices:["Un petit-dejeuner gratuit","Une nuit gratuite","Un transfert gratuit a l'aeroport"],
+     accept:[0], feedback:["Exact ! Complimentary breakfast = petit-dejeuner offert.","Non, c'est un petit-dejeuner (breakfast), pas une nuit.","Non, c'est un petit-dejeuner (breakfast), pas un transfert."]}
+  ]
+},
+{
+  id:'resto_commander', name:'Restaurant — Commander', icon:'&#127869;',
+  steps:[
+    {g:"Good evening! Welcome to Warung Bali. Here is the menu. Today's special is grilled sea bass with lemon butter sauce.",fr:"Bonsoir ! Bienvenue au Warung Bali. Voici le menu. Le plat du jour est du bar grille sauce beurre citron.",voc:"menu=menu|today's special=plat du jour|grilled=grille|sea bass=bar (poisson)|lemon=citron|butter=beurre|sauce=sauce",
+     q:"Are you ready to order?",qfr:"Etes-vous prets a commander ?",
+     choices:["I would like the sea bass, please.","Can I have the chicken curry, please?","What do you recommend?"],
+     accept:[0,1,2], feedback:["Excellent choice! The sea bass is very fresh today.","Of course! It is one of our best dishes.","I recommend the sea bass. Very fresh, caught this morning!"]},
+    {g:"Do you have any allergies? We use peanuts and shrimp in many dishes.",fr:"Avez-vous des allergies ? Nous utilisons des cacahuetes et des crevettes dans beaucoup de plats.",voc:"allergies=allergies|peanuts=cacahuetes|shrimp=crevettes",
+     q:"",qfr:"",
+     choices:["No allergies, thank you.","Yes, I am allergic to nuts.","I cannot eat shellfish, please be careful."],
+     accept:[0,1,2], feedback:["Great! No problem then.","Thank you for telling me. I will make sure there are no nuts.","Absolutely. I will inform the kitchen. No shellfish for you."]},
+    {g:"How would you like your steak? Rare, medium, or well done?",fr:"Quelle cuisson pour votre steak ? Saignant, a point ou bien cuit ?",voc:"rare=saignant|medium=a point|well done=bien cuit|steak=steak",
+     q:"",qfr:"",
+     choices:["Medium, please.","Well done, please.","Rare, please."],
+     accept:[0,1,2], feedback:["Medium it is! About fifteen minutes.","Well done, coming right up!","A man of taste! Rare it is."]},
+    {g:"Your total is four hundred and fifty thousand rupiah. That is about twenty-eight US dollars. Would you like to pay by card or cash?",fr:"Le total est 450 000 roupies, soit environ 28 dollars. Carte ou especes ?",voc:"total=total|card=carte|cash=especes",
+     q:"Comprehension check! Combien coute le repas en dollars ?",qfr:"",
+     choices:["28 dollars","48 dollars","280 dollars"],
+     accept:[0], feedback:["Correct ! Twenty-eight = 28.","Non, twenty-eight = 28, pas forty-eight = 48.","Non, twenty-eight = 28, pas two hundred and eighty = 280."]}
+  ]
+},
+{
+  id:'shopping', name:'Shopping — Marche', icon:'&#128722;',
+  steps:[
+    {g:"Hello, sir! Welcome! Looking for something special? I have beautiful sarongs, very good quality!",fr:"Bonjour monsieur ! Bienvenue ! Vous cherchez quelque chose ? J'ai de beaux sarongs, tres bonne qualite !",voc:"looking for=chercher|beautiful=beau|sarongs=sarongs|quality=qualite",
+     q:"",qfr:"",
+     choices:["How much is this blue one?","I am just looking, thank you.","Do you have any t-shirts?"],
+     accept:[0,1,2], feedback:["This one is three hundred thousand rupiah. Very good quality!","No problem! Take your time, look around.","Yes! Over here. Many colors and sizes."]},
+    {g:"This sarong is three hundred thousand rupiah. Best price for you, my friend!",fr:"Ce sarong coute 300 000 roupies. Meilleur prix pour vous, mon ami !",voc:"price=prix|thousand=mille|rupiah=roupies",
+     q:"",qfr:"",
+     choices:["That is too expensive. How about one hundred and fifty thousand?","Can you give me a better price if I buy two?","OK, I will take it."],
+     accept:[0,1,2], feedback:["Hmm... two hundred thousand? That is my best price.","Two for five hundred thousand. Good deal!","Thank you! You will love it. Very good quality."]},
+    {g:"Comprehension check! Le vendeur dit: 'I can give you two for five hundred thousand. That is a saving of one hundred thousand.' Combien tu economises ?",fr:"",voc:"saving=economie",
+     q:"",qfr:"",
+     choices:["100 000 roupies","50 000 roupies","500 000 roupies"],
+     accept:[0], feedback:["Correct ! One hundred thousand = 100 000.","Non, one hundred thousand = 100 000.","Non, five hundred thousand = 500 000 c'est le total, pas l'economie."]}
+  ]
+},
+{
+  id:'urgence_pharmacie', name:'Urgence — Pharmacie', icon:'&#128138;',
+  steps:[
+    {g:"Good morning. How can I help you?",fr:"Bonjour. Comment puis-je vous aider ?",voc:"how can I help=comment aider",
+     q:"",qfr:"",
+     choices:["I have a pain in my foot. My tendon hurts.","I need something for a headache.","I have a stomach ache. I think I ate something bad."],
+     accept:[0,1,2], feedback:["I see. How long have you had this pain?","OK. Do you have any allergies to medication?","That happens sometimes with local food. Let me help you."]},
+    {g:"These are anti-inflammatory tablets. Take one tablet twice a day, morning and evening, with food. Do not take them on an empty stomach.",fr:"Ce sont des anti-inflammatoires. Prenez un comprime deux fois par jour, matin et soir, avec de la nourriture. Pas a jeun.",voc:"tablets=comprimes|twice a day=deux fois par jour|morning=matin|evening=soir|empty stomach=estomac vide/a jeun",
+     q:"Comprehension check! Combien de comprimes par jour et quand ?",qfr:"",
+     choices:["2 par jour, matin et soir, avec nourriture","1 par jour, le matin, a jeun","3 par jour, matin midi et soir"],
+     accept:[0], feedback:["Parfait ! Tu as tout compris. Twice a day = 2 fois par jour.","Non, twice = deux fois. Et with food = avec nourriture, pas a jeun.","Non, twice = deux fois, pas three times = trois fois."]},
+    {g:"The course is five days. If you do not see improvement after three days, you need to see a doctor. That will be eighty-five thousand rupiah.",fr:"Le traitement dure 5 jours. Si pas d'amelioration apres 3 jours, consultez un medecin. Ca fait 85 000 roupies.",voc:"course=traitement|improvement=amelioration|doctor=medecin|five days=5 jours",
+     q:"Comprehension check! Combien de jours de traitement et combien ca coute ?",qfr:"",
+     choices:["5 jours, 85 000 roupies","3 jours, 85 000 roupies","5 jours, 58 000 roupies"],
+     accept:[0], feedback:["Excellent ! Five = 5, eighty-five thousand = 85 000.","Non, le traitement dure five = 5 jours (pas 3, 3 c'est quand consulter).","Le nombre de jours est bon mais eighty-five = 85, pas fifty-eight = 58."]}
+  ]
+}
 ];
-
-const SCENARIO_LABELS = {
-  hotel_arrivee:'Hotel arrivee',hotel_demandes:'Hotel demandes',hotel_problemes:'Hotel problemes',
-  hotel_checkout:'Hotel checkout',taxi_commander:'Taxi commander',taxi_negocier:'Taxi negocier',
-  taxi_directions:'Taxi directions',transport_bus:'Transport bus',resto_reserver:'Resto reserver',
-  resto_commander:'Resto commander',resto_problemes:'Resto problemes',resto_addition:'Resto addition',
-  excursion_reserver:'Excursion reserver',excursion_groupe:'Excursion groupe',excursion_annul:'Excursion annul.',
-  shopping_prix:'Shopping prix',shopping_tailles:'Shopping tailles',urgence_sante:'Urgence sante',
-  urgence_papiers:'Urgence papiers',nombres_heures:'Nombres & heures',pratique_libre:'Pratique libre'
-};
-
-const QUOTES = [
-  "The journey of a thousand miles begins with a single step.",
-  "On commence ? J'ai prepare un beau voyage pour toi.",
-  "Chaque session te rapproche du vrai voyage.",
-  "Tu vas voir, aujourd'hui on va bien bosser.",
-  "Ready when you are, Dume.",
-  "Les erreurs, c'est le chemin. Allez, on y va.",
-  "Bali t'attend. Moi aussi.",
-  "Un mot a la fois. C'est comme ca qu'on apprend."
-];
-
-const FILLER_PHRASES = ["Mmm...","Right...","I see...","Okay...","Ah...","Let me think..."];
-
-const HESITATION_WORDS = ['hmm','hm','euh','uh','um','err','wait','let me think','how do you say','comment dit-on','je sais pas'];
-
-const FRENCH_INDICATORS = [
-  'comment','qu\'est-ce','c\'est quoi','pourquoi','je comprends pas',
-  'tu peux','ca veut dire','comment dit-on','quelle est la difference',
-  'je sais pas','j\'ai pas compris','repete','trop vite','je comprends rien',
-  'explique','difference entre'
-];
-
-const SPEECH_CONFIG = {
-  1:{rate:0.75,pause:800,desc:'Lent et articule'},
-  2:{rate:0.95,pause:400,desc:'Vitesse normale'},
-  3:{rate:1.1,pause:200,desc:'Naturel — contractions'},
-  4:{rate:1.25,pause:100,desc:'Rapide — accents varies'}
-};
 
 // ── STATE ──
-let stats = null;
-let config = null;
-let sessionActive = false;
-let conversationHistory = [];
-let sessionExchanges = 0;
-let sessionObservations = [];
-let currentPhase = 1;
-let inputMode = 'voice';
-let isGustiSpeaking = false;
-let userIsSpeaking = false;
-let lastGustiMessage = '';
-let lastGustiRaw = '';
-let voices = [];
-let recognition = null;
-let hasVoiceSupport = false;
-let hasSynthesis = false;
-let longSilenceTimer = null;
-let cycleRunning = false;
-let lastApiError = '';
+let stats, curScenario, curStep, sessionScore, sessionTotal, phase;
+const QUOTES=["On commence ? J'ai prepare un beau voyage.","Chaque session te rapproche du vrai voyage.","Les erreurs, c'est le chemin.","Bali t'attend. Moi aussi.","Un mot a la fois.","Ready when you are, Dume.","Aujourd'hui on va bien bosser.","C'est en parlant qu'on apprend."];
 
 // ── INIT ──
-document.addEventListener('DOMContentLoaded', () => {
-  loadConfig();
+document.addEventListener('DOMContentLoaded',()=>{
   loadStats();
-  updateHomeScreen();
-  initVoice();
-  bindEvents();
-  rotateQuote();
-  // Check if config needed
-  if (!config.apiKey) {
-    setTimeout(() => openModal('settingsModal'), 400);
-  }
+  updateHome();
+  document.getElementById('quote').textContent='« '+QUOTES[Math.floor(Math.random()*QUOTES.length)]+' »';
+  document.getElementById('btnGo').onclick=startSession;
+  document.getElementById('btnBack').onclick=endSession;
+  document.getElementById('btnStat').onclick=()=>{renderStats();document.getElementById('statsMod').classList.add('show')};
 });
 
-// ── CONFIG ──
-function loadConfig() {
-  const raw = localStorage.getItem(CONFIG_KEY);
-  config = raw ? JSON.parse(raw) : { apiKey:'', model:'qwen/qwen3.6-plus:free', ghToken:'', phase:1 };
-  // Migration: reset invalid models to default
-  const validModels = ['qwen/qwen3.6-plus:free','nvidia/nemotron-3-super-120b-a12b:free','minimax/minimax-m2.5:free'];
-  if (!validModels.includes(config.model)) {
-    config.model = 'qwen/qwen3.6-plus:free';
-    saveConfig();
-  }
-  currentPhase = config.phase || 1;
+// ── STATS ──
+function defaultStats(){
+  const sc={};
+  SCENARIOS.forEach(s=>{sc[s.id]={plays:0,scores:[],best:0,last:null}});
+  return{sessions:0,days:[],lastSession:null,phase:1,scenarios:sc};
 }
-function saveConfig() {
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+function loadStats(){const r=localStorage.getItem(STORAGE);stats=r?JSON.parse(r):defaultStats();SCENARIOS.forEach(s=>{if(!stats.scenarios[s.id])stats.scenarios[s.id]={plays:0,scores:[],best:0,last:null}});phase=stats.phase||1}
+function saveStats(){localStorage.setItem(STORAGE,JSON.stringify(stats))}
+
+// ── HOME ──
+function updateHome(){
+  document.getElementById('hSess').textContent=stats.sessions;
+  document.getElementById('hDays').textContent=stats.days.length;
+  document.getElementById('hPhase').textContent=stats.phase||1;
+  const all=Object.values(stats.scenarios).flatMap(s=>s.scores);
+  document.getElementById('hScore').textContent=all.length?Math.round(all.reduce((a,b)=>a+b,0)/all.length)+'%':'--';
+  const info=document.getElementById('homeInfo');
+  const weak=Object.entries(stats.scenarios).filter(([,v])=>v.scores.length&&v.scores[v.scores.length-1]<60).map(([k])=>SCENARIOS.find(s=>s.id===k)?.name).filter(Boolean);
+  let h='';
+  if(stats.lastSession)h+=`<span>Derniere session : ${relDate(stats.lastSession)}</span>`;
+  if(weak.length)h+=`<span style="color:var(--gold)">A travailler : ${weak.slice(0,2).join(', ')}</span>`;
+  info.innerHTML=h;
 }
-
-// ── STATS / LOCALSTORAGE ──
-function defaultStats() {
-  const scenarios = {};
-  SCENARIO_IDS.forEach(id => {
-    scenarios[id] = { sessions:0, scores:[], score_moyen:null, score_comprehension:null, lacunes_cumulees:[], questions_fr:[], acquis:[], derniere_session:null };
-  });
-  return {
-    meta: { total_sessions:0, total_echanges:0, jours_actifs:[], derniere_session:null, derniere_sync_github:null, dernier_rapport:null, sessions_au_dernier_rapport:0 },
-    lacunes_globales: [],
-    scenarios,
-    historique: []
-  };
-}
-function loadStats() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  stats = raw ? JSON.parse(raw) : defaultStats();
-  // Ensure all scenario keys exist
-  SCENARIO_IDS.forEach(id => {
-    if (!stats.scenarios[id]) stats.scenarios[id] = { sessions:0, scores:[], score_moyen:null, score_comprehension:null, lacunes_cumulees:[], questions_fr:[], acquis:[], derniere_session:null };
-  });
-}
-function saveStats() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
-}
-
-// ── HOME SCREEN ──
-function updateHomeScreen() {
-  document.getElementById('stSess').textContent = stats.meta.total_sessions;
-  document.getElementById('stExch').textContent = stats.meta.total_echanges;
-  document.getElementById('stDays').textContent = stats.meta.jours_actifs.length;
-  // Average score
-  const allScores = Object.values(stats.scenarios).flatMap(s => s.scores);
-  const avg = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
-  document.getElementById('stScore').textContent = avg !== null ? avg+'%' : '--';
-  // Info rows
-  const critLac = stats.lacunes_globales.filter(l => (l.count||0) >= 3);
-  document.getElementById('infoLacunes').textContent = critLac.length ? `\u26A0\uFE0F ${critLac.length} lacune${critLac.length>1?'s':''} critique${critLac.length>1?'s':''}` : '';
-  document.getElementById('infoLast').textContent = stats.meta.derniere_session ? `\uD83D\uDCC5 Derniere session : ${formatRelDate(stats.meta.derniere_session)}` : '';
-  document.getElementById('infoSync').textContent = stats.meta.derniere_sync_github ? `\u2705 GitHub sync : ${new Date(stats.meta.derniere_sync_github).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}` : '';
-  // Phase
-  document.getElementById('cfgPhase').value = currentPhase;
-}
-
-function formatRelDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso), now = new Date();
-  const diff = Math.floor((now - d) / 86400000);
-  if (diff === 0) return "aujourd'hui";
-  if (diff === 1) return 'hier';
-  return `il y a ${diff} jours`;
-}
-
-function rotateQuote() {
-  const el = document.getElementById('quoteEl');
-  el.textContent = '\u00AB ' + QUOTES[Math.floor(Math.random()*QUOTES.length)] + ' \u00BB';
-}
-
-// ── EVENTS ──
-function bindEvents() {
-  document.getElementById('btnStart').addEventListener('click', startSession);
-  document.getElementById('btnBack').addEventListener('click', endSession);
-  document.getElementById('btnSettings').addEventListener('click', () => {
-    document.getElementById('cfgApiKey').value = config.apiKey || '';
-    document.getElementById('cfgModel').value = config.model || 'qwen/qwen3.6-plus:free';
-    document.getElementById('cfgGhToken').value = config.ghToken || '';
-    document.getElementById('cfgPhase').value = currentPhase;
-    openModal('settingsModal');
-  });
-  document.getElementById('btnSaveSettings').addEventListener('click', () => {
-    config.apiKey = document.getElementById('cfgApiKey').value.trim();
-    config.model = document.getElementById('cfgModel').value;
-    config.ghToken = document.getElementById('cfgGhToken').value.trim();
-    config.phase = parseInt(document.getElementById('cfgPhase').value);
-    currentPhase = config.phase;
-    saveConfig();
-    closeModal('settingsModal');
-  });
-  document.getElementById('btnStats').addEventListener('click', () => { renderStatsModal(); openModal('statsModal'); });
-  document.getElementById('btnKeyboard').addEventListener('click', () => switchToKeyboard());
-  document.getElementById('btnMic').addEventListener('click', () => switchToVoice());
-  document.getElementById('btnReplay').addEventListener('click', () => { if (lastGustiRaw) gustiSpeak(lastGustiRaw, currentPhase); });
-  document.getElementById('btnSend').addEventListener('click', sendKeyboardMessage);
-  document.getElementById('kbInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendKeyboardMessage(); });
-  document.getElementById('micBtn').addEventListener('click', onMicBtnClick);
-  document.getElementById('btnEnableMic').addEventListener('click', async () => {
-    closeModal('micModal');
-    await requestMicPermission();
-  });
-  document.getElementById('btnUseKeyboard').addEventListener('click', () => {
-    closeModal('micModal');
-    switchToKeyboard();
-  });
-}
-
-// ── MODALS ──
-function openModal(id) { document.getElementById(id).classList.add('show'); }
-function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-
-// ── VOICE INIT ──
-function initVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  hasVoiceSupport = !!SR;
-  hasSynthesis = 'speechSynthesis' in window;
-
-  if (hasVoiceSupport) {
-    recognition = new SR();
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-    recognition.lang = 'en-US';
-
-    recognition.onresult = onRecognitionResult;
-    recognition.onspeechstart = () => { userIsSpeaking = true; clearTimeout(longSilenceTimer); };
-    recognition.onspeechend = () => { userIsSpeaking = false; };
-    recognition.onerror = onRecognitionError;
-    recognition.onend = onRecognitionEnd;
-  }
-
-  if (hasSynthesis) {
-    speechSynthesis.onvoiceschanged = () => { voices = speechSynthesis.getVoices(); };
-    voices = speechSynthesis.getVoices();
-    // iOS workaround
-    setInterval(() => {
-      if (speechSynthesis.speaking) { speechSynthesis.pause(); speechSynthesis.resume(); }
-    }, 10000);
-  }
-
-  if (!hasVoiceSupport) {
-    inputMode = 'keyboard';
-  }
-}
-
-async function requestMicPermission() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    stream.getTracks().forEach(t => t.stop());
-    inputMode = 'voice';
-    updateInputUI();
-  } catch(e) {
-    switchToKeyboard();
-  }
-}
-
-// ── INPUT MODE ──
-function switchToKeyboard() {
-  inputMode = 'keyboard';
-  stopListening();
-  updateInputUI();
-}
-function switchToVoice() {
-  if (!hasVoiceSupport) return;
-  inputMode = 'voice';
-  updateInputUI();
-}
-function updateInputUI() {
-  const vz = document.getElementById('voiceZone');
-  const kb = document.getElementById('kbRow');
-  if (inputMode === 'voice') { vz.classList.remove('hidden'); kb.classList.add('hidden'); }
-  else { vz.classList.add('hidden'); kb.classList.remove('hidden'); }
-}
-
-// ── VOICE RECOGNITION ──
-function startListening() {
-  if (!recognition || isGustiSpeaking) return;
-  try {
-    recognition.lang = 'en-US';
-    recognition.start();
-    document.getElementById('micBtn').classList.add('listening');
-    document.getElementById('voiceHint').textContent = '';
-    document.getElementById('interimEl').textContent = '';
-    // Long silence timer
-    longSilenceTimer = setTimeout(() => {
-      if (!userIsSpeaking && sessionActive) {
-        stopListening();
-        gustiSpeak("Take your time... what would you like to say?", currentPhase);
-      }
-    }, 8000);
-  } catch(e) {}
-}
-
-function stopListening() {
-  if (!recognition) return;
-  try { recognition.abort(); } catch(e) {}
-  document.getElementById('micBtn').classList.remove('listening','processing');
-  document.getElementById('voiceHint').textContent = '';
-  clearTimeout(longSilenceTimer);
-}
-
-function onRecognitionResult(event) {
-  const result = event.results[event.results.length - 1];
-  const transcript = result[0].transcript.trim();
-  document.getElementById('interimEl').textContent = transcript;
-
-  if (result.isFinal) {
-    clearTimeout(longSilenceTimer);
-    document.getElementById('interimEl').textContent = '';
-    // Filter hesitations
-    if (isHesitation(transcript)) {
-      document.getElementById('voiceHint').textContent = 'Prends ton temps...';
-      try { recognition.start(); } catch(e) {}
-      return;
-    }
-    // Filter too short
-    if (transcript.split(' ').length < 2 && !/[?.!]/.test(transcript)) {
-      try { recognition.start(); } catch(e) {}
-      return;
-    }
-    stopListening();
-    handleUserMessage(transcript);
-  }
-}
-
-function onRecognitionError(event) {
-  if (event.error === 'no-speech') {
-    document.getElementById('voiceHint').textContent = "Je n'ai rien entendu";
-    if (sessionActive && cycleRunning) setTimeout(() => startListening(), 1000);
-  } else if (event.error === 'not-allowed') {
-    document.getElementById('voiceHint').textContent = 'Autorise le micro dans Safari';
-    switchToKeyboard();
-  }
-}
-
-function onRecognitionEnd() {
-  document.getElementById('micBtn').classList.remove('listening');
-  // Auto-restart in cycle mode
-  if (sessionActive && cycleRunning && inputMode === 'voice' && !isGustiSpeaking) {
-    // Will be restarted by the conversation cycle
-  }
-}
-
-function onMicBtnClick() {
-  if (!sessionActive) return;
-  if (document.getElementById('micBtn').classList.contains('listening')) {
-    stopListening();
-  } else {
-    startListening();
-  }
-}
-
-function isHesitation(t) {
-  const lower = t.toLowerCase().trim();
-  return HESITATION_WORDS.some(h => lower === h || lower.startsWith(h + ' ')) && t.split(' ').length <= 3;
-}
-
-// ── SPEECH SYNTHESIS ──
-function gustiSpeak(text, phase) {
-  if (!hasSynthesis) return Promise.resolve();
-  return new Promise(resolve => {
-    const clean = stripTags(text);
-    if (!clean.trim()) { resolve(); return; }
-
-    speechSynthesis.cancel();
-    isGustiSpeaking = true;
-    stopListening();
-
-    const utt = new SpeechSynthesisUtterance(clean);
-    utt.lang = 'en-US';
-    utt.rate = SPEECH_CONFIG[phase]?.rate || 1.0;
-    utt.pitch = 1.0;
-    utt.volume = 1.0;
-
-    const pref = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
-              || voices.find(v => v.lang.startsWith('en'));
-    if (pref) utt.voice = pref;
-
-    utt.onend = () => { isGustiSpeaking = false; resolve(); };
-    utt.onerror = () => { isGustiSpeaking = false; resolve(); };
-    speechSynthesis.speak(utt);
-  });
-}
-
-function gustiSpeakFrench(text) {
-  if (!hasSynthesis) return Promise.resolve();
-  return new Promise(resolve => {
-    speechSynthesis.cancel();
-    isGustiSpeaking = true;
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = 'fr-FR';
-    utt.rate = 1.0;
-    const frVoice = voices.find(v => v.lang === 'fr-FR') || voices.find(v => v.lang.startsWith('fr'));
-    if (frVoice) utt.voice = frVoice;
-    utt.onend = () => { isGustiSpeaking = false; resolve(); };
-    utt.onerror = () => { isGustiSpeaking = false; resolve(); };
-    speechSynthesis.speak(utt);
-  });
-}
-
-function gustiSpeakFiller(text) {
-  if (!hasSynthesis) return;
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = 'en-US';
-  utt.rate = 1.0;
-  const pref = voices.find(v => v.lang.startsWith('en'));
-  if (pref) utt.voice = pref;
-  speechSynthesis.speak(utt);
-}
-
-function stripTags(text) {
-  return text
-    .replace(/\[FR:.*?\]/gs, '')
-    .replace(/\[VOCAB:.*?\]/gs, '')
-    .replace(/\[✓.*?\]/gs, '')
-    .replace(/\[OBS:.*?\]/gs, '')
-    .replace(/\[BILAN\][\s\S]*?\[\/BILAN\]/g, '')
-    .replace(/\[hors sc[eè]ne\]/gi, '')
-    .replace(/\[reprend[s]?\]/gi, '')
-    .replace(/\[reprise\]/gi, '')
-    .trim();
-}
+function relDate(iso){const d=Math.floor((Date.now()-new Date(iso))/864e5);return d===0?"aujourd'hui":d===1?'hier':`il y a ${d} jours`}
 
 // ── SESSION ──
-async function startSession() {
-  if (!config.apiKey) {
-    openModal('settingsModal');
-    return;
-  }
+function startSession(){
+  // Pick scenario: prioritize weak ones, then unplayed, then random
+  const weak=SCENARIOS.filter(s=>{const st=stats.scenarios[s.id];return st.scores.length&&st.scores[st.scores.length-1]<60});
+  const unplayed=SCENARIOS.filter(s=>!stats.scenarios[s.id].plays);
+  const pool=weak.length?weak:unplayed.length?unplayed:SCENARIOS;
+  curScenario=pool[Math.floor(Math.random()*pool.length)];
+  curStep=0;sessionScore=0;sessionTotal=0;
 
-  sessionActive = true;
-  sessionExchanges = 0;
-  sessionObservations = [];
-  conversationHistory = [];
-  document.getElementById('chatBody').innerHTML = '';
-  document.getElementById('exchCount').textContent = '0';
-  document.getElementById('sessionScore').textContent = '';
-  document.getElementById('sessionPhaseLabel').textContent = 'Phase ' + currentPhase;
+  document.getElementById('home').classList.add('off');
+  document.getElementById('sess').classList.remove('off');
+  document.getElementById('sessScene').textContent=curScenario.name;
+  document.getElementById('chat').innerHTML='';
+  document.getElementById('exN').textContent='0';
+  document.getElementById('exT').textContent=curScenario.steps.length;
+  document.getElementById('exScore').textContent='';
+  document.getElementById('pFill').style.width='0%';
 
-  // Switch screens
-  document.getElementById('sh').classList.add('hidden');
-  document.getElementById('sc').classList.remove('hidden');
-  updateInputUI();
-
-  // Check mic permission for voice mode
-  if (inputMode === 'voice' && hasVoiceSupport) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(t => t.stop());
-    } catch(e) {
-      openModal('micModal');
-    }
-  }
-
-  // Build system prompt and start
-  const sysPrompt = buildSystemPrompt();
-  conversationHistory = [{ role: 'user', content: 'Commencer la session.' }];
-
-  addMessage('ai', '&#127802; Gusti prepare la session...', 'loading');
-  const reply = await callAPI(sysPrompt, conversationHistory);
-  removeLoadingMessage();
-
-  if (!reply) {
-    addMessage('ai', 'Erreur de connexion. ' + (lastApiError || 'Verifie ta cle API dans les reglages.'));
-    return;
-  }
-
-  conversationHistory.push({ role: 'assistant', content: reply });
-  const parsed = parseReply(reply);
-  renderAIMessage(parsed);
-  lastGustiMessage = parsed.cleanText;
-  lastGustiRaw = parsed.cleanText;
-
-  // Start conversation cycle — tout automatique
-  cycleRunning = true;
-  if (inputMode === 'voice' && hasVoiceSupport) {
-    await gustiSpeak(parsed.cleanText, currentPhase);
-    setTimeout(() => startListening(), 350);
-  }
+  playStep();
 }
 
-function endSession() {
-  // If no exchanges or API failed, just go back immediately
-  if (sessionExchanges < 3) {
-    finalizeSession();
-    return;
+function playStep(){
+  if(curStep>=curScenario.steps.length){showBilan();return}
+  const step=curScenario.steps[curStep];
+  const chat=document.getElementById('chat');
+
+  // Gusti message
+  const gEl=document.createElement('div');gEl.className='msg g';
+  let gh=`<span class="tag">&#127802; GUSTI</span>${esc(step.g)}`;
+  if(step.fr)gh+=`<span class="fr">${esc(step.fr)}</span>`;
+  if(step.voc)gh+=`<span class="voc">${step.voc.split('|').join(' &middot; ')}</span>`;
+  gEl.innerHTML=gh;chat.appendChild(gEl);
+
+  // Question if different from main text
+  if(step.q){
+    setTimeout(()=>{
+      const qEl=document.createElement('div');qEl.className='msg g';
+      qEl.innerHTML=`<span class="tag">&#127802; GUSTI</span>${esc(step.q)}`;
+      if(step.qfr)qEl.innerHTML+=`<span class="fr">${esc(step.qfr)}</span>`;
+      chat.appendChild(qEl);
+      scroll();
+      speak(step.q,()=>showChoices(step));
+    },800);
+  } else {
+    showChoices(step);
   }
-  requestBilan();
+
+  // Speak
+  speak(step.g,step.q?null:()=>showChoices(step));
+  document.getElementById('exN').textContent=curStep+1;
+  document.getElementById('pFill').style.width=((curStep+1)/curScenario.steps.length*100)+'%';
+  scroll();
 }
 
-async function requestBilan() {
-  conversationHistory.push({ role: 'user', content: '[SYSTEM] La session se termine. Donne un [BILAN] complet de cette session.' });
-  addMessage('ai', '&#127802; Gusti prepare le bilan...', 'loading');
-  const sysPrompt = buildSystemPrompt();
-  const reply = await callAPI(sysPrompt, conversationHistory);
-  removeLoadingMessage();
-  if (reply) {
-    conversationHistory.push({ role: 'assistant', content: reply });
-    const parsed = parseReply(reply);
-    renderAIMessage(parsed);
-    if (hasSynthesis) await gustiSpeak(parsed.cleanText, currentPhase);
-  }
-  setTimeout(() => finalizeSession(), 2000);
+function showChoices(step){
+  const zone=document.getElementById('bzone');
+  document.getElementById('status').textContent='Choisis ta reponse :';
+  const acts=document.getElementById('acts');
+  acts.innerHTML='';
+
+  // Create choice buttons in chat
+  const chat=document.getElementById('chat');
+  const cDiv=document.createElement('div');cDiv.className='choices';
+  step.choices.forEach((c,i)=>{
+    const btn=document.createElement('button');btn.className='cho';btn.textContent=c;
+    btn.onclick=()=>handleChoice(step,i,cDiv);
+    cDiv.appendChild(btn);
+  });
+  chat.appendChild(cDiv);
+  scroll();
 }
 
-function finalizeSession() {
-  sessionActive = false;
-  cycleRunning = false;
-  stopListening();
-  speechSynthesis.cancel();
+function handleChoice(step,idx,cDiv){
+  const btns=cDiv.querySelectorAll('.cho');
+  btns.forEach(b=>b.disabled=true);
+  sessionTotal++;
 
-  // Update stats
-  const today = new Date().toISOString().slice(0, 10);
-  stats.meta.total_sessions++;
-  stats.meta.total_echanges += sessionExchanges;
-  stats.meta.derniere_session = new Date().toISOString();
-  if (!stats.meta.jours_actifs.includes(today)) stats.meta.jours_actifs.push(today);
+  const isCorrect=step.accept.includes(idx);
+  if(isCorrect){sessionScore++;btns[idx].classList.add('correct')}
+  else{btns[idx].classList.add('wrong');btns[step.accept[0]].classList.add('correct')}
 
-  // Process observations
-  processObservations();
+  // User message
+  const chat=document.getElementById('chat');
+  const uEl=document.createElement('div');uEl.className='msg u';
+  uEl.innerHTML=`<span class="tag">DUME</span>${esc(step.choices[idx])}`;
+  chat.appendChild(uEl);
 
-  // Check reports
-  checkReportTrigger();
+  // Feedback
+  setTimeout(()=>{
+    const fb=step.feedback[idx]||step.feedback[0];
+    const fEl=document.createElement('div');fEl.className='msg g';
+    fEl.innerHTML=`<span class="tag">&#127802; GUSTI</span>${esc(fb)}`;
+    chat.appendChild(fEl);
+    speak(isCorrect?fb:'');
+    scroll();
+
+    // Update score display
+    document.getElementById('exScore').textContent=Math.round(sessionScore/sessionTotal*100)+'%';
+
+    // Next step
+    setTimeout(()=>{curStep++;playStep()},2000);
+  },600);
+
+  scroll();
+}
+
+// ── BILAN ──
+function showBilan(){
+  const pct=sessionTotal?Math.round(sessionScore/sessionTotal*100):0;
+  const chat=document.getElementById('chat');
+
+  const b=document.createElement('div');b.className='bilan';
+  let cl=pct>=80?'good':pct>=50?'mid':'bad';
+  b.innerHTML=`<h3>&#127802; Bilan de session</h3>
+    <div class="row"><span class="lb">Scenario</span><span class="vl">${curScenario.name}</span></div>
+    <div class="row"><span class="lb">Score</span><span class="vl ${cl}">${pct}%</span></div>
+    <div class="row"><span class="lb">Bonnes reponses</span><span class="vl">${sessionScore}/${sessionTotal}</span></div>
+    <div class="row"><span class="lb">Phase</span><span class="vl">${phase}</span></div>
+    <div class="row"><span class="lb">${pct>=80?'Bravo ! Continue comme ca.':pct>=50?'Pas mal. On va retravailler les points faibles.':'On va reprendre ca ensemble. Pas de stress.'}</span></div>`;
+  chat.appendChild(b);
+  scroll();
+
+  // Speak bilan
+  const msg=pct>=80?"Great job today! You did really well.":pct>=50?"Not bad! We will work on the weak points next time.":"Don't worry. We will practice this again. You are making progress.";
+  speak(msg);
+
+  // Save stats
+  const sid=curScenario.id;
+  stats.scenarios[sid].plays++;
+  stats.scenarios[sid].scores.push(pct);
+  if(pct>stats.scenarios[sid].best)stats.scenarios[sid].best=pct;
+  stats.scenarios[sid].last=new Date().toISOString();
+  stats.sessions++;
+  stats.lastSession=new Date().toISOString();
+  const today=new Date().toISOString().slice(0,10);
+  if(!stats.days.includes(today))stats.days.push(today);
+
+  // Auto-adapt phase
+  const allScores=Object.values(stats.scenarios).flatMap(s=>s.scores);
+  const avg=allScores.length?allScores.reduce((a,b)=>a+b,0)/allScores.length:0;
+  if(avg>=85&&stats.sessions>=12)stats.phase=Math.min(4,Math.max(stats.phase,4));
+  else if(avg>=75&&stats.sessions>=8)stats.phase=Math.min(3,Math.max(stats.phase,3));
+  else if(avg>=60&&stats.sessions>=4)stats.phase=Math.min(2,Math.max(stats.phase,2));
+  phase=stats.phase;
 
   saveStats();
-  syncToGitHub(stats);
+  syncGitHub();
 
-  // Switch screens
-  setTimeout(() => {
-    document.getElementById('sc').classList.add('hidden');
-    document.getElementById('sh').classList.remove('hidden');
-    updateHomeScreen();
-  }, 1000);
+  // Show continue button
+  document.getElementById('status').textContent='';
+  const acts=document.getElementById('acts');
+  acts.innerHTML='';
+  const btn1=document.createElement('button');btn1.className='abtn primary';btn1.textContent='Continuer';btn1.onclick=()=>{curStep=0;sessionScore=0;sessionTotal=0;startSession()};
+  const btn2=document.createElement('button');btn2.className='abtn';btn2.textContent='Terminer';btn2.onclick=goHome;
+  acts.appendChild(btn1);acts.appendChild(btn2);
 }
 
-// ── MESSAGES ──
-function handleUserMessage(text) {
-  sessionExchanges++;
-  document.getElementById('exchCount').textContent = sessionExchanges;
-
-  // Detect French
-  const isFrench = detectLanguage(text) === 'french';
-
-  // Display
-  addMessage('user', escapeHtml(text));
-
-  // Send to API
-  conversationHistory.push({ role: 'user', content: text });
-  sendToGusti(text, isFrench);
+function endSession(){goHome()}
+function goHome(){
+  document.getElementById('sess').classList.add('off');
+  document.getElementById('home').classList.remove('off');
+  updateHome();
 }
 
-function sendKeyboardMessage() {
-  const inp = document.getElementById('kbInput');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
-  handleUserMessage(text);
+// ── TTS ──
+function speak(text,cb){
+  if(!('speechSynthesis' in window)){if(cb)cb();return}
+  speechSynthesis.cancel();
+  const clean=text.replace(/\[.*?\]/g,'').trim();
+  if(!clean){if(cb)cb();return}
+  const u=new SpeechSynthesisUtterance(clean);
+  u.lang='en-US';
+  const rates={1:.75,2:.95,3:1.1,4:1.25};
+  u.rate=rates[phase]||.85;
+  const voices=speechSynthesis.getVoices();
+  const v=voices.find(v=>v.lang==='en-US'&&v.name.includes('Samantha'))||voices.find(v=>v.lang.startsWith('en'));
+  if(v)u.voice=v;
+  u.onend=()=>{if(cb)cb()};
+  u.onerror=()=>{if(cb)cb()};
+  speechSynthesis.speak(u);
 }
-
-async function sendToGusti(transcript, isFrench) {
-  // Filler
-  if (inputMode === 'voice' && hasSynthesis && !isFrench) {
-    const filler = FILLER_PHRASES[Math.floor(Math.random() * FILLER_PHRASES.length)];
-    gustiSpeakFiller(filler);
-  }
-
-  addMessage('ai', '<div class="wave-indicator"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>', 'loading');
-
-  const sysPrompt = buildSystemPrompt();
-  const reply = await callAPI(sysPrompt, conversationHistory);
-  removeLoadingMessage();
-
-  if (!reply) {
-    addMessage('ai', 'Erreur de connexion. Reessaie.');
-    if (inputMode === 'voice' && cycleRunning) setTimeout(() => startListening(), 1000);
-    return;
-  }
-
-  conversationHistory.push({ role: 'assistant', content: reply });
-  const parsed = parseReply(reply);
-  renderAIMessage(parsed);
-  lastGustiMessage = parsed.cleanText;
-  lastGustiRaw = parsed.cleanText;
-
-  // Continue cycle
-  if (inputMode === 'voice' && cycleRunning && sessionActive) {
-    speechSynthesis.cancel();
-    await gustiSpeak(parsed.cleanText, currentPhase);
-    setTimeout(() => { if (sessionActive) startListening(); }, 350);
-  }
-}
-
-function addMessage(type, content, extra) {
-  const el = document.createElement('div');
-  el.className = `msg ${type}` + (extra ? ` ${extra}` : '');
-  el.innerHTML = (type === 'ai' ? '<span class="mtag">&#127802; GUSTI</span>' : '<span class="mtag">DUME</span>') + content;
-  document.getElementById('chatBody').appendChild(el);
-  scrollToBottom();
-}
-
-function removeLoadingMessage() {
-  const msgs = document.querySelectorAll('.msg.loading');
-  msgs.forEach(m => m.remove());
-}
-
-function renderAIMessage(parsed) {
-  const el = document.createElement('div');
-  let cls = 'msg ai';
-  if (parsed.isHorsScene) cls = 'msg ai hors-scene';
-  if (parsed.isBilan) cls = 'msg ai bilan';
-  el.className = cls;
-
-  let html = '<span class="mtag">' + (parsed.isHorsScene ? '&#127802; GUSTI — hors scene' : '&#127802; GUSTI') + '</span>';
-  html += escapeHtml(parsed.cleanText).replace(/\n/g, '<br>');
-
-  // FR annotations
-  parsed.frAnnotations.forEach(fr => {
-    html += `<span class="fr-annot">${escapeHtml(fr)}</span>`;
-  });
-  // Vocab
-  parsed.vocabAnnotations.forEach(v => {
-    html += ` <span class="vocab-annot">${escapeHtml(v)}</span>`;
-  });
-  // Checks
-  parsed.checks.forEach(c => {
-    html += `<span class="check-annot">${escapeHtml(c)}</span>`;
-  });
-
-  el.innerHTML = html;
-  document.getElementById('chatBody').appendChild(el);
-
-  // Reprise indicator
-  if (parsed.hasReprise) {
-    const rep = document.createElement('div');
-    rep.className = 'msg reprise';
-    rep.textContent = '— reprise de scene —';
-    document.getElementById('chatBody').appendChild(rep);
-  }
-
-  scrollToBottom();
-}
-
-function scrollToBottom() {
-  const cb = document.getElementById('chatBody');
-  requestAnimationFrame(() => { cb.scrollTop = cb.scrollHeight; });
-}
-
-// ── PARSE AI REPLY ──
-function parseReply(raw) {
-  const frAnnotations = [];
-  const vocabAnnotations = [];
-  const checks = [];
-  const observations = [];
-
-  // Extract [FR:...]
-  (raw.match(/\[FR:(.*?)\]/gs) || []).forEach(m => {
-    frAnnotations.push(m.replace(/\[FR:(.*?)\]/s, '$1').trim());
-  });
-  // Extract [VOCAB:...]
-  (raw.match(/\[VOCAB:(.*?)\]/gs) || []).forEach(m => {
-    vocabAnnotations.push(m.replace(/\[VOCAB:(.*?)\]/s, '$1').trim());
-  });
-  // Extract checks
-  (raw.match(/\[✓(.*?)\]/gs) || []).forEach(m => {
-    checks.push(m);
-  });
-  // Extract OBS
-  (raw.match(/\[OBS:(.*?)\]/gs) || []).forEach(m => {
-    const inner = m.replace(/\[OBS:(.*?)\]/s, '$1').trim();
-    observations.push(inner);
-    sessionObservations.push(inner);
-  });
-
-  const isHorsScene = /\[hors sc[eè]ne\]/i.test(raw);
-  const hasReprise = /\[reprend[s]?\]|\[reprise\]/i.test(raw);
-  const isBilan = /\[BILAN\]/i.test(raw);
-
-  // Clean text for display
-  let cleanText = raw
-    .replace(/\[FR:.*?\]/gs, '')
-    .replace(/\[VOCAB:.*?\]/gs, '')
-    .replace(/\[✓.*?\]/gs, '')
-    .replace(/\[OBS:.*?\]/gs, '')
-    .replace(/\[BILAN\]|\[\/BILAN\]/gi, '')
-    .replace(/\[hors sc[eè]ne\]/gi, '')
-    .replace(/\[reprend[s]?\]/gi, '')
-    .replace(/\[reprise\]/gi, '')
-    .replace(/\[SC[EÈ]NE\s*:.*?\]/gi, '')
-    .replace(/\(pause\)/gi, '')
-    .replace(/\(.*?d[ée]bit.*?\)/gi, '')
-    .replace(/\(.*?articulation.*?\)/gi, '')
-    .replace(/\(.*?contraction.*?\)/gi, '')
-    .replace(/\(.*?[Jj]e joue.*?\)/gi, '')
-    .replace(/\(.*?comme en cours.*?\)/gi, '')
-    .replace(/^\s*\[.*?\]\s*$/gm, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-
-  return { cleanText, frAnnotations, vocabAnnotations, checks, observations, isHorsScene, hasReprise, isBilan };
-}
-
-// ── DETECT LANGUAGE ──
-function detectLanguage(text) {
-  const lower = text.toLowerCase();
-  const isFrench = FRENCH_INDICATORS.some(w => lower.includes(w));
-  if (isFrench) return 'french';
-  // Also check for ? with French words
-  if (/[àâéèêëïîôùûüç]/.test(lower)) return 'french';
-  return 'english';
-}
-
-// ── SYSTEM PROMPT ──
-function buildSystemPrompt() {
-  const phase = currentPhase;
-  const phaseDesc = {
-    1: "Phase 1 — Fondations. Patient, pedagogique, traductions systematiques. Debit lent, articulation maximale. Reponds a toutes les questions FR sans sourciller. Speak slowly and clearly. Pause between each sentence. Articulate every word distinctly. No contractions. Like a language teacher.",
-    2: "Phase 2 — Consolidation. Plus direct, corrections immediates, reduis les traductions. Debit normal, prononciation soignee. Speak at normal pace but with clear pronunciation. Use basic contractions (I'm, we're, you'll). Like a professional.",
-    3: "Phase 3 — Fluidite. Exigeant, peu indulgent, situations stressantes. Debit naturel avec contractions: gonna, wanna, d'you, kinda. Speak at natural conversational pace. Use full range of contractions and natural reductions. Vary intonation naturally.",
-    4: "Phase 4 — Autonomie. Presque silencieux, intervient peu. 'Good.' suffit. Debit rapide, accents varies. Speak fast, naturally, with varied accents. No accommodation. Real world speed. The learner must adapt."
-  };
-
-  const weakScenarios = Object.entries(stats.scenarios)
-    .filter(([,v]) => v.score_moyen !== null && v.score_moyen < 50)
-    .map(([k,v]) => `${SCENARIO_LABELS[k]}: ${v.score_moyen}%`);
-
-  const persistentLacunes = stats.lacunes_globales
-    .filter(l => (l.count || 0) >= 2)
-    .map(l => l.topic);
-
-  const reportType = shouldTriggerReport();
-
-  return `Tu es Gusti, coach d'anglais balinais. Dume est francophone debutant.
-
-IMPORTANT — FORMAT DE REPONSE:
-- Parle DIRECTEMENT en anglais comme le personnage. Pas de description, pas de "(pause)", pas de "[SCENE:...]", pas d'instructions entre parentheses.
-- Apres chaque replique en anglais, ajoute sur une nouvelle ligne: [FR: traduction francaise]
-- Ajoute le vocabulaire cle: [VOCAB: mot = traduction | mot2 = traduction2]
-- Pour noter les lacunes: [OBS:LACUNE:sujet] ou acquis: [OBS:ACQUIS:sujet]
-
-EXEMPLE DE BONNE REPONSE:
-Good afternoon, sir. Welcome to Bali. May I see your passport, please?
-Your visa costs thirty-five US dollars.
-[FR: Bonjour monsieur. Bienvenue a Bali. Puis-je voir votre passeport ? Le visa coute 35 dollars.]
-[VOCAB: passport = passeport | visa = visa | costs = coute]
-
-Now, what would you like to say to the immigration officer?
-
-${phaseDesc[phase]}
-
-REGLES:
-- Si Dume parle en francais → reponds en francais (court), puis reprends la scene. Marque [hors scene] et [reprend].
-- Integre des chiffres, heures, prix dans chaque scene.
-- Parfois teste la comprehension: dis quelque chose en anglais puis demande "Qu'est-ce que tu as compris ?"
-- Jamais juger. Patient. Encourageant.
-
-Scenes: Aeroport, Taxi, Hotel, Restaurant, Excursions, Shopping, Urgences, Nombres.
-${weakScenarios.length ? 'Priorite: ' + weakScenarios.join(', ') : ''}
-
-Commence directement. Joue un personnage. Pas de menu.`;
-}
-
-// ── API CALL (OpenRouter — avec fallback automatique) ──
-const FREE_MODELS = [
-  'qwen/qwen3.6-plus:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'minimax/minimax-m2.5:free',
-  'stepfun/step-3.5-flash:free',
-  'arcee-ai/trinity-large-preview:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free'
-];
-
-async function callAPI(systemPrompt, messages) {
-  if (!config.apiKey) return null;
-
-  const apiMessages = [
-    { role: 'system', content: systemPrompt },
-    ...messages.map(m => ({ role: m.role, content: m.content }))
-  ];
-
-  // Essayer chaque modele jusqu'a ce qu'un fonctionne
-  for (const model of FREE_MODELS) {
-    try {
-      console.log('Essai modele:', model);
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.apiKey}`,
-          'HTTP-Referer': 'https://dume2309.github.io/Apprendre-l-Anglais/',
-          'X-Title': 'Apprendre l\'Anglais'
-        },
-        body: JSON.stringify({
-          model,
-          messages: apiMessages,
-          max_tokens: 1024,
-          temperature: 0.9
-        })
-      });
-
-      if (!res.ok) {
-        console.warn('Modele', model, 'erreur', res.status);
-        continue; // essayer le suivant
-      }
-
-      const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || null;
-      if (text) {
-        console.log('Succes avec:', model);
-        return text;
-      }
-    } catch (e) {
-      console.warn('Modele', model, 'echec:', e.message);
-      continue;
-    }
-  }
-
-  lastApiError = 'Tous les modeles gratuits sont surcharges. Reessaie dans 1 minute.';
-  return null;
-}
-
-// ── OBSERVATIONS ──
-function processObservations() {
-  sessionObservations.forEach(obs => {
-    const parts = obs.split(':');
-    const type = parts[0];
-    const topic = parts.slice(1).join(':').trim();
-
-    if (type === 'LACUNE') {
-      const existing = stats.lacunes_globales.find(l => l.topic === topic);
-      if (existing) { existing.count = (existing.count || 1) + 1; existing.last = new Date().toISOString(); }
-      else stats.lacunes_globales.push({ topic, count: 1, first: new Date().toISOString(), last: new Date().toISOString() });
-    }
-    if (type === 'ACQUIS') {
-      // Remove from lacunes if mastered
-      stats.lacunes_globales = stats.lacunes_globales.filter(l => l.topic !== topic);
-    }
-  });
-}
-
-// ── REPORTS ──
-function shouldTriggerReport() {
-  const s = stats.meta.total_sessions;
-  const lastReport = stats.meta.sessions_au_dernier_rapport || 0;
-
-  if (s === 3 && lastReport < 3) return 'initial';
-  if (s >= 72) return '6months';
-  if ([12, 36, 60].includes(s) && lastReport < s) return 'phase_end';
-  if (s > 0 && s % 10 === 0 && lastReport < s) return 'milestone';
-  if (s - lastReport >= 7) return 'weekly';
-
-  // Alert: persistent lacune
-  const persistent = stats.lacunes_globales.filter(l => (l.count || 0) >= 3);
-  if (persistent.length > 0 && s - lastReport >= 3) return 'alert';
-
-  return null;
-}
-
-function checkReportTrigger() {
-  const type = shouldTriggerReport();
-  if (type) {
-    stats.meta.dernier_rapport = new Date().toISOString();
-    stats.meta.sessions_au_dernier_rapport = stats.meta.total_sessions;
-  }
-}
+// iOS voice fix
+if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=()=>{};setInterval(()=>{if(speechSynthesis.speaking){speechSynthesis.pause();speechSynthesis.resume()}},10000)}
 
 // ── GITHUB SYNC ──
-async function syncToGitHub(data) {
-  const token = config.ghToken;
-  if (!token) return;
-
-  try {
-    const getRes = await fetch(
-      `https://api.github.com/repos/${REPO}/contents/${SYNC_PATH}`,
-      { headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' } }
-    );
-    const existing = getRes.ok ? await getRes.json() : {};
-    const sha = existing.sha || null;
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-
-    await fetch(`https://api.github.com/repos/${REPO}/contents/${SYNC_PATH}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Auto-sync ${new Date().toLocaleDateString('fr-FR')}`,
-        content,
-        ...(sha && { sha })
-      })
-    });
-    stats.meta.derniere_sync_github = new Date().toISOString();
-    saveStats();
-    updateHomeScreen();
-  } catch (e) {
-    console.error('GitHub sync error:', e);
-  }
+function syncGitHub(){
+  const token=localStorage.getItem('gh_token');
+  if(!token)return;
+  const repo='dume2309/Apprendre-l-Anglais',path='suivi/progression.json';
+  const content=btoa(unescape(encodeURIComponent(JSON.stringify(stats,null,2))));
+  fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github.v3+json'}})
+  .then(r=>r.ok?r.json():{}).then(existing=>{
+    fetch(`https://api.github.com/repos/${repo}/contents/${path}`,{method:'PUT',headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`Auto-sync ${new Date().toLocaleDateString('fr-FR')}`,content,...(existing.sha&&{sha:existing.sha})})
+    }).catch(()=>{});
+  }).catch(()=>{});
 }
 
 // ── STATS MODAL ──
-function renderStatsModal() {
-  const container = document.getElementById('statsContent');
-  let html = '';
-
-  // Global
-  const allScores = Object.values(stats.scenarios).flatMap(s => s.scores);
-  const avg = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : 0;
-
-  html += `<div class="stats-section"><h3>Vue globale</h3>`;
-  html += `<div class="bar-row"><span class="bar-label">Score moyen</span><div class="bar-track"><div class="bar-fill" style="width:${avg}%;background:${avg>=70?'var(--green)':avg>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-val">${avg}%</span></div>`;
-  html += `<div style="font-size:11px;color:var(--muted);margin-top:8px">${stats.meta.total_sessions} sessions | ${stats.meta.total_echanges} echanges | ${stats.meta.jours_actifs.length} jours actifs</div>`;
-  html += `</div>`;
-
-  // Scenarios
-  html += `<div class="stats-section"><h3>Par scenario</h3>`;
-  Object.entries(stats.scenarios).forEach(([id, s]) => {
-    if (s.sessions === 0) return;
-    const sc = s.score_moyen || 0;
-    html += `<div class="bar-row"><span class="bar-label">${SCENARIO_LABELS[id] || id}</span><div class="bar-track"><div class="bar-fill" style="width:${sc}%;background:${sc>=70?'var(--green)':sc>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-val">${sc}%</span></div>`;
+function renderStats(){
+  const b=document.getElementById('statsBody');
+  const all=Object.values(stats.scenarios).flatMap(s=>s.scores);
+  const avg=all.length?Math.round(all.reduce((a,b)=>a+b,0)/all.length):0;
+  let h=`<div class="bar-r"><span class="bar-l">Score moyen</span><div class="bar-t"><div class="bar-f" style="width:${avg}%;background:${avg>=70?'var(--green)':avg>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-v">${avg}%</span></div>`;
+  h+=`<div style="font-size:11px;color:var(--muted);margin:8px 0">${stats.sessions} sessions | ${stats.days.length} jours | Phase ${stats.phase}</div>`;
+  SCENARIOS.forEach(s=>{
+    const st=stats.scenarios[s.id];if(!st.plays)return;
+    const sc=st.scores.length?st.scores[st.scores.length-1]:0;
+    h+=`<div class="bar-r"><span class="bar-l">${s.name}</span><div class="bar-t"><div class="bar-f" style="width:${sc}%;background:${sc>=70?'var(--green)':sc>=50?'var(--gold)':'var(--red)'}"></div></div><span class="bar-v">${sc}%</span></div>`;
   });
-  html += `</div>`;
-
-  // Lacunes
-  if (stats.lacunes_globales.length) {
-    html += `<div class="stats-section"><h3>Lacunes</h3>`;
-    stats.lacunes_globales.forEach(l => {
-      const color = (l.count || 1) >= 3 ? 'var(--red)' : 'var(--gold)';
-      html += `<div style="font-size:12px;color:${color};margin:3px 0">${l.topic} (x${l.count || 1})</div>`;
-    });
-    html += `</div>`;
-  }
-
-  container.innerHTML = html || '<p style="color:var(--muted);font-size:13px">Pas encore de donnees. Lance ta premiere session !</p>';
+  b.innerHTML=h;
 }
 
 // ── UTILS ──
-function escapeHtml(text) {
-  const d = document.createElement('div');
-  d.textContent = text;
-  return d.innerHTML;
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function scroll(){const c=document.getElementById('chat');requestAnimationFrame(()=>c.scrollTop=c.scrollHeight)}
 </script>
 </body>
 </html>
