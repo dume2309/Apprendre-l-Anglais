@@ -1001,47 +1001,63 @@ ${reportType ? `RAPPORT SPONTANE A GENERER: type "${reportType}". Integre-le nat
 Commence directement dans la scene. Pas de menu. Pas de question "que veux-tu pratiquer". Tu decides. C'est toi le pilote.`;
 }
 
-// ── API CALL (OpenRouter) ──
+// ── API CALL (OpenRouter — avec fallback automatique) ──
+const FREE_MODELS = [
+  'qwen/qwen3.6-plus:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'minimax/minimax-m2.5:free',
+  'stepfun/step-3.5-flash:free',
+  'arcee-ai/trinity-large-preview:free',
+  'nvidia/nemotron-3-nano-30b-a3b:free'
+];
+
 async function callAPI(systemPrompt, messages) {
   if (!config.apiKey) return null;
-  try {
-    const apiMessages = [
-      { role: 'system', content: systemPrompt },
-      ...messages.map(m => ({ role: m.role, content: m.content }))
-    ];
 
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${config.apiKey}`,
-        'HTTP-Referer': 'https://dume2309.github.io/Apprendre-l-Anglais/',
-        'X-Title': 'Apprendre l\'Anglais'
-      },
-      body: JSON.stringify({
-        model: config.model,
-        messages: apiMessages,
-        max_tokens: 1024,
-        temperature: 0.9
-      })
-    });
+  const apiMessages = [
+    { role: 'system', content: systemPrompt },
+    ...messages.map(m => ({ role: m.role, content: m.content }))
+  ];
 
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('API error:', res.status, err);
-      lastApiError = `Erreur ${res.status}: ${err.slice(0,200)}`;
-      return null;
+  // Essayer chaque modele jusqu'a ce qu'un fonctionne
+  for (const model of FREE_MODELS) {
+    try {
+      console.log('Essai modele:', model);
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.apiKey}`,
+          'HTTP-Referer': 'https://dume2309.github.io/Apprendre-l-Anglais/',
+          'X-Title': 'Apprendre l\'Anglais'
+        },
+        body: JSON.stringify({
+          model,
+          messages: apiMessages,
+          max_tokens: 1024,
+          temperature: 0.9
+        })
+      });
+
+      if (!res.ok) {
+        console.warn('Modele', model, 'erreur', res.status);
+        continue; // essayer le suivant
+      }
+
+      const data = await res.json();
+      const text = data.choices?.[0]?.message?.content || null;
+      if (text) {
+        console.log('Succes avec:', model);
+        return text;
+      }
+    } catch (e) {
+      console.warn('Modele', model, 'echec:', e.message);
+      continue;
     }
-
-    const data = await res.json();
-    const text = data.choices?.[0]?.message?.content || null;
-    if (!text) { lastApiError = 'Reponse vide'; console.error('Empty response:', JSON.stringify(data)); }
-    return text;
-  } catch (e) {
-    console.error('API call failed:', e);
-    lastApiError = e.message;
-    return null;
   }
+
+  lastApiError = 'Tous les modeles gratuits sont surcharges. Reessaie dans 1 minute.';
+  return null;
 }
 
 // ── OBSERVATIONS ──
