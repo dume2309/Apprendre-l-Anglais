@@ -176,7 +176,7 @@ input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;bac
     <div class="interim-text" id="interimEl"></div>
     <div id="voiceIndicator"></div>
     <button class="mic-btn" id="micBtn">&#127908;</button>
-    <div class="voice-hint" id="voiceHint">Appuie et parle</div>
+    <div class="voice-hint" id="voiceHint"></div>
     <div class="voice-actions">
       <button id="btnKeyboard">&#9000;&#65039; Clavier</button>
       <button id="btnReplay">&#128266; Ecouter</button>
@@ -324,6 +324,7 @@ let hasVoiceSupport = false;
 let hasSynthesis = false;
 let longSilenceTimer = null;
 let cycleRunning = false;
+let lastApiError = '';
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
@@ -517,7 +518,7 @@ function startListening() {
     recognition.lang = 'en-US';
     recognition.start();
     document.getElementById('micBtn').classList.add('listening');
-    document.getElementById('voiceHint').textContent = 'Parle...';
+    document.getElementById('voiceHint').textContent = '';
     document.getElementById('interimEl').textContent = '';
     // Long silence timer
     longSilenceTimer = setTimeout(() => {
@@ -533,7 +534,7 @@ function stopListening() {
   if (!recognition) return;
   try { recognition.abort(); } catch(e) {}
   document.getElementById('micBtn').classList.remove('listening','processing');
-  document.getElementById('voiceHint').textContent = 'Appuie et parle';
+  document.getElementById('voiceHint').textContent = '';
   clearTimeout(longSilenceTimer);
 }
 
@@ -698,19 +699,22 @@ async function startSession() {
   const reply = await callAPI(sysPrompt, conversationHistory);
   removeLoadingMessage();
 
-  if (reply) {
-    conversationHistory.push({ role: 'assistant', content: reply });
-    const parsed = parseReply(reply);
-    renderAIMessage(parsed);
-    lastGustiMessage = parsed.cleanText;
-    lastGustiRaw = parsed.cleanText;
+  if (!reply) {
+    addMessage('ai', 'Erreur de connexion a Gemini. ' + (lastApiError || 'Verifie ta cle API dans les reglages.'));
+    return;
+  }
 
-    // Start conversation cycle
-    if (inputMode === 'voice' && hasVoiceSupport) {
-      cycleRunning = true;
-      await gustiSpeak(parsed.cleanText, currentPhase);
-      setTimeout(() => startListening(), 350);
-    }
+  conversationHistory.push({ role: 'assistant', content: reply });
+  const parsed = parseReply(reply);
+  renderAIMessage(parsed);
+  lastGustiMessage = parsed.cleanText;
+  lastGustiRaw = parsed.cleanText;
+
+  // Start conversation cycle — tout automatique
+  cycleRunning = true;
+  if (inputMode === 'voice' && hasVoiceSupport) {
+    await gustiSpeak(parsed.cleanText, currentPhase);
+    setTimeout(() => startListening(), 350);
   }
 }
 
@@ -1016,13 +1020,17 @@ async function callAPI(systemPrompt, messages) {
     if (!res.ok) {
       const err = await res.text();
       console.error('API error:', res.status, err);
+      lastApiError = `Erreur ${res.status}: ${err.slice(0,200)}`;
       return null;
     }
 
     const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    if (!text) { lastApiError = 'Reponse vide de Gemini'; console.error('Empty response:', JSON.stringify(data)); }
+    return text;
   } catch (e) {
     console.error('API call failed:', e);
+    lastApiError = e.message;
     return null;
   }
 }
