@@ -195,14 +195,10 @@ input,textarea{font-family:var(--fn);font-size:16px;border:none;outline:none;bac
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <h2>&#9881;&#65039; Configuration</h2>
-    <label>Cle API OpenRouter (gratuite)</label>
+    <label>Cle API Gemini (gratuite — prioritaire)</label>
+    <input type="password" id="cfgGeminiKey" placeholder="AIza...">
+    <label>Cle API OpenRouter (gratuite — backup)</label>
     <input type="password" id="cfgApiKey" placeholder="sk-or-...">
-    <label>Modele</label>
-    <select id="cfgModel">
-      <option value="qwen/qwen3.6-plus:free">Qwen 3.6 Plus (gratuit, recommande)</option>
-      <option value="nvidia/nemotron-3-super-120b-a12b:free">Nemotron 120B (gratuit)</option>
-      <option value="minimax/minimax-m2.5:free">MiniMax M2.5 (gratuit)</option>
-    </select>
     <label>Token GitHub (optionnel — sync progression)</label>
     <input type="password" id="cfgGhToken" placeholder="ghp_...">
     <label>Phase actuelle</label>
@@ -725,12 +721,12 @@ async function startSession() {
 }
 
 function endSession() {
-  // Request bilan if enough exchanges
-  if (sessionActive && sessionExchanges >= 3) {
-    requestBilan();
+  // If no exchanges or API failed, just go back immediately
+  if (sessionExchanges < 3) {
+    finalizeSession();
     return;
   }
-  finalizeSession();
+  requestBilan();
 }
 
 async function requestBilan() {
@@ -930,6 +926,14 @@ function parseReply(raw) {
     .replace(/\[hors sc[eè]ne\]/gi, '')
     .replace(/\[reprend[s]?\]/gi, '')
     .replace(/\[reprise\]/gi, '')
+    .replace(/\[SC[EÈ]NE\s*:.*?\]/gi, '')
+    .replace(/\(pause\)/gi, '')
+    .replace(/\(.*?d[ée]bit.*?\)/gi, '')
+    .replace(/\(.*?articulation.*?\)/gi, '')
+    .replace(/\(.*?contraction.*?\)/gi, '')
+    .replace(/\(.*?[Jj]e joue.*?\)/gi, '')
+    .replace(/\(.*?comme en cours.*?\)/gi, '')
+    .replace(/^\s*\[.*?\]\s*$/gm, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
@@ -966,39 +970,34 @@ function buildSystemPrompt() {
 
   const reportType = shouldTriggerReport();
 
-  return `Tu es Gusti, un Balinais chaleureux et malin, coach d'anglais pour Dume (francophone, debutant-intermediaire en anglais, passione de voyages Bali/Lombok).
+  return `Tu es Gusti, coach d'anglais balinais. Dume est francophone debutant.
 
-CONTEXTE: Voyage simule immersif. Tu joues TOUS les personnages (receptionniste, chauffeur, serveur, pilote, etc.). Tu enchaines les scenes. Tu pilotes tout. Aucun menu. Dume n'a qu'a parler.
+IMPORTANT — FORMAT DE REPONSE:
+- Parle DIRECTEMENT en anglais comme le personnage. Pas de description, pas de "(pause)", pas de "[SCENE:...]", pas d'instructions entre parentheses.
+- Apres chaque replique en anglais, ajoute sur une nouvelle ligne: [FR: traduction francaise]
+- Ajoute le vocabulaire cle: [VOCAB: mot = traduction | mot2 = traduction2]
+- Pour noter les lacunes: [OBS:LACUNE:sujet] ou acquis: [OBS:ACQUIS:sujet]
+
+EXEMPLE DE BONNE REPONSE:
+Good afternoon, sir. Welcome to Bali. May I see your passport, please?
+Your visa costs thirty-five US dollars.
+[FR: Bonjour monsieur. Bienvenue a Bali. Puis-je voir votre passeport ? Le visa coute 35 dollars.]
+[VOCAB: passport = passeport | visa = visa | costs = coute]
+
+Now, what would you like to say to the immigration officer?
 
 ${phaseDesc[phase]}
 
-SCENES DISPONIBLES: Avion, Aeroport, Taxi, Hotel (arrivee/demandes/problemes/checkout), Excursions, Shopping, Restaurant (reserver/commander/problemes/addition), Pharmacie/Medecin, Perte & Vol, Nombres & Heures.
+REGLES:
+- Si Dume parle en francais → reponds en francais (court), puis reprends la scene. Marque [hors scene] et [reprend].
+- Integre des chiffres, heures, prix dans chaque scene.
+- Parfois teste la comprehension: dis quelque chose en anglais puis demande "Qu'est-ce que tu as compris ?"
+- Jamais juger. Patient. Encourageant.
 
-REGLES FONDAMENTALES:
-1. Quand Dume pose une question en francais → sors du personnage, reponds en francais (court, concret, 3-5 lignes max), puis reprends la scene exactement ou elle en etait. Marque [hors scene] avant la reponse FR et [reprend] apres.
-2. Utilise ces balises dans tes reponses:
-   [FR: traduction ou explication] — annotation francaise
-   [VOCAB: mot = traduction] — vocabulaire
-   [✓ point valide] — ce que Dume a bien dit
-   [OBS:LACUNE:sujet] — lacune detectee
-   [OBS:ACQUIS:sujet] — point acquis
-   [OBS:QUESTION_FR:sujet] — question posee en francais
-   [OBS:COMPREHENSION:XX] — score comprehension (0-100)
-   [OBS:HESITATION_VOCAL:Xs] — hesitation vocale
-3. Integre TOUJOURS des chiffres, heures, prix dans les scenes (point faible connu).
-4. Teste la comprehension passive: joue un personnage qui dit quelque chose, arrete-toi, demande a Dume de reformuler en francais ce qu'il a compris. Evalue et note [OBS:COMPREHENSION:XX].
-5. En fin de session (quand on te le demande), donne un [BILAN] avec: score estime, scenarios pratiques, lacunes, acquis, conseil.
-6. Jamais juger. Jamais faire sentir une question stupide. Tu as tout vu.
-7. Tu ne te repetes pas sauf si Dume le demande.${phase >= 3 ? ' En phase 3+, une repetition max, notee.' : ''}${phase >= 4 ? ' En phase 4, zero repetition: "In real life, the pilot says it once. So do I."' : ''}
+Scenes: Aeroport, Taxi, Hotel, Restaurant, Excursions, Shopping, Urgences, Nombres.
+${weakScenarios.length ? 'Priorite: ' + weakScenarios.join(', ') : ''}
 
-${weakScenarios.length ? 'SCENARIOS FAIBLES (prioritaires): ' + weakScenarios.join(', ') : ''}
-${persistentLacunes.length ? 'LACUNES PERSISTANTES (a integrer dans les scenes): ' + persistentLacunes.join(', ') : ''}
-
-STATS: ${stats.meta.total_sessions} sessions, ${stats.meta.total_echanges} echanges, phase ${phase}.
-
-${reportType ? `RAPPORT SPONTANE A GENERER: type "${reportType}". Integre-le naturellement apres quelques echanges.` : ''}
-
-Commence directement dans la scene. Pas de menu. Pas de question "que veux-tu pratiquer". Tu decides. C'est toi le pilote.`;
+Commence directement. Joue un personnage. Pas de menu.`;
 }
 
 // ── API CALL (OpenRouter — avec fallback automatique) ──
